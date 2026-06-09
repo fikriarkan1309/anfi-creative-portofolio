@@ -119,12 +119,16 @@ export default function WorkflowAndSkills({
                     className="flex flex-col items-center gap-1 focus:outline-none"
                   >
                     <div
-                      className="w-10 h-10 bg-brand-card/70 border border-white/5 rounded-lg flex items-center justify-center text-xs font-mono font-extrabold cursor-pointer hover:border-brand-cyan/35 hover:-translate-y-0.5 transition-all duration-300"
+                      className="w-10 h-10 bg-brand-card/70 border border-white/5 rounded-lg flex items-center justify-center text-xs font-mono font-extrabold cursor-pointer hover:border-brand-cyan/35 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden p-1.5"
                       title={`${skill.name} - ${skill.level}%`}
                     >
-                      <span className="font-mono text-xs font-extrabold" style={{ color: skill.color }}>
-                        {skill.abbr}
-                      </span>
+                      {skill.imageUrl ? (
+                        <img src={skill.imageUrl} alt={skill.name} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
+                      ) : (
+                        <span className="font-mono text-xs font-extrabold" style={{ color: skill.color }}>
+                          {skill.abbr}
+                        </span>
+                      )}
                     </div>
                     <span className="text-[9px] text-[#A0AEC0] font-mono tracking-tight text-center max-w-[50px] truncate">
                       {skill.name}
@@ -150,12 +154,16 @@ export default function WorkflowAndSkills({
                     className="flex flex-col items-center gap-1"
                   >
                     <div
-                      className="w-10 h-10 bg-brand-card/70 border border-white/5 rounded-lg flex items-center justify-center text-xs font-mono font-extrabold cursor-pointer hover:border-brand-cyan/35 hover:-translate-y-0.5 transition-all duration-300"
+                      className="w-10 h-10 bg-brand-card/70 border border-white/5 rounded-lg flex items-center justify-center text-xs font-mono font-extrabold cursor-pointer hover:border-brand-cyan/35 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden p-1.5"
                       title={`${skill.name} - ${skill.level}%`}
                     >
-                      <span className="font-mono text-xs font-extrabold" style={{ color: skill.color }}>
-                        {skill.abbr}
-                      </span>
+                      {skill.imageUrl ? (
+                        <img src={skill.imageUrl} alt={skill.name} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
+                      ) : (
+                        <span className="font-mono text-xs font-extrabold" style={{ color: skill.color }}>
+                          {skill.abbr}
+                        </span>
+                      )}
                     </div>
                     <span className="text-[9px] text-[#A0AEC0] font-mono tracking-tight text-center max-w-[50px] truncate">
                       {skill.name}

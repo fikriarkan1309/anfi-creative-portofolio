@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowUpRight, X, Calendar, Layers, ShieldCheck, ExternalLink } from 'lucide-react';
-import { ProjectItem } from '../types';
+import { ProjectItem, PersonalInfo } from '../types';
 import { Language, TRANSLATIONS } from '../services/language';
 
 interface PortfolioProps {
   projects: ProjectItem[];
+  personalInfo: PersonalInfo;
   lang: Language;
 }
 
 type TabType = 'ALL' | 'BRANDING' | 'JERSEY' | 'WEBSITE';
 
-export default function Portfolio({ projects, lang }: PortfolioProps) {
+export default function Portfolio({ projects, personalInfo, lang }: PortfolioProps) {
   const [activeTab, setActiveTab] = useState<TabType>('ALL');
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
 
@@ -28,6 +29,18 @@ export default function Portfolio({ projects, lang }: PortfolioProps) {
 
   // Dynamic Case Study details generator based on category/title
   const getCaseStudyDetails = (project: ProjectItem) => {
+    // If the project itself has dynamic CMS populated properties, use them!
+    if (project.client || project.duration || project.deliverables || project.challenge || project.solution || project.quote) {
+      return {
+        client: project.client || 'ANFI Creative Studio',
+        duration: project.duration || '2 Weeks',
+        deliverables: project.deliverables || 'Project Deliverables and Assets',
+        challenge: project.challenge || 'Custom creative design tailored to the brand identity objectives.',
+        solution: project.solution || 'Engineered bespoke visual components and layouts that represent style and performance.',
+        quote: project.quote || 'Outstanding execution, highly professional service, and flawless delivery!'
+      };
+    }
+
     const isBranding = project.category.toLowerCase() === 'branding';
     const isJersey = project.category.toLowerCase() === 'jersey';
 
@@ -200,7 +213,11 @@ export default function Portfolio({ projects, lang }: PortfolioProps) {
         <div className="flex justify-center">
           <button
             onClick={() => {
-              alert(lang === 'id' ? 'Garansi Sinkronisasi Sanity CMS berfungsi penuh! Gunakan CMS Settings di navigasi atas untuk menyambungkan studio Sanity global Anda.' : 'Sanity CMS live sync is fully functional! Use CMS Settings in the header navigation to sync your workspace database.');
+              if (personalInfo.portfolioPdfUrl && !personalInfo.portfolioPdfUrl.includes('YOUR_PORTFOLIO_FILE_ID')) {
+                window.open(personalInfo.portfolioPdfUrl, '_blank', 'noopener,noreferrer');
+              } else {
+                window.open('https://drive.google.com/file/d/YOUR_PORTFOLIO_FILE_ID/view?usp=sharing', '_blank', 'noopener,noreferrer');
+              }
             }}
             className="flex items-center gap-2 border border-white/10 hover:border-brand-cyan py-2.5 px-6 text-xs font-semibold tracking-wider text-white hover:text-brand-cyan transition-all duration-300 rounded-xs group font-display uppercase"
           >

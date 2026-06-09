@@ -1,14 +1,16 @@
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Mail, ArrowUpRight } from 'lucide-react';
-import { PersonalInfo } from '../types';
+import { PersonalInfo, ServiceItem, SkillItem } from '../types';
 import { Language, TRANSLATIONS } from '../services/language';
 
 interface HeroProps {
   personalInfo: PersonalInfo;
+  services: ServiceItem[];
+  skills: SkillItem[];
   lang: Language;
 }
 
-export default function Hero({ personalInfo, lang }: HeroProps) {
+export default function Hero({ personalInfo, services, skills, lang }: HeroProps) {
   // Parallax setup for cards
   const { scrollY } = useScroll();
   const yCard1 = useTransform(scrollY, [0, 800], [0, -60]);
@@ -17,18 +19,26 @@ export default function Hero({ personalInfo, lang }: HeroProps) {
 
   const t = TRANSLATIONS[lang];
 
-  const tools = [
-    { name: 'Ai', label: 'Illustrator', color: 'bg-amber-500/10 text-amber-500 border-amber-500/30' },
-    { name: 'Ps', label: 'Photoshop', color: 'bg-sky-500/10 text-sky-400 border-sky-500/30' },
-    { name: 'Id', label: 'InDesign', color: 'bg-pink-500/10 text-pink-500 border-pink-500/30' },
-    { name: 'Cdr', label: 'CorelDRAW', color: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30' },
-    { name: 'Figma', label: 'Figma', color: 'bg-purple-500/10 text-purple-400 border-purple-500/30' },
-    { name: 'HTML5', label: 'HTML5', color: 'bg-[#FF5722]/10 text-[#FF5722] border-[#FF5722]/30' },
-    { name: 'CSS3', label: 'CSS3', color: 'bg-[#2196F3]/10 text-[#2196F3] border-[#2196F3]/30' },
-    { name: 'JS', label: 'JS', color: 'bg-[#FFDF00]/10 text-[#FFDF00] border-[#FFDF00]/30' },
-    { name: 'React', label: 'React', color: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30' },
-    { name: 'Firebase', label: 'Firebase', color: 'bg-[#FFCB2B]/10 text-[#FFCB2B] border-[#FFCB2B]/30' },
-  ];
+  // Dynamic tools fetched from skills collection if available, else fall back to default design stack
+  const displayTools = skills && skills.length > 0
+    ? skills.slice(0, 10).map(s => ({
+        name: s.abbr,
+        label: s.name,
+        colorHex: s.color,
+        imageUrl: s.imageUrl
+      }))
+    : [
+        { name: 'Ai', label: 'Illustrator', colorHex: '#FF7F00' },
+        { name: 'Ps', label: 'Photoshop', colorHex: '#00C3FF' },
+        { name: 'Id', label: 'InDesign', colorHex: '#FF007F' },
+        { name: 'Cdr', label: 'CorelDRAW', colorHex: '#00B050' },
+        { name: 'Figma', label: 'Figma', colorHex: '#F24E1E' },
+        { name: 'HTML5', label: 'HTML5', colorHex: '#E34F26' },
+        { name: 'CSS3', label: 'CSS3', colorHex: '#1572B6' },
+        { name: 'JS', label: 'JS', colorHex: '#F7DF1E' },
+        { name: 'React', label: 'React', colorHex: '#61DAFB' },
+        { name: 'Firebase', label: 'Firebase', colorHex: '#FFCA28' },
+      ];
 
   const handleScrollToPortfolio = () => {
     if (personalInfo.portfolioPdfUrl && !personalInfo.portfolioPdfUrl.includes('YOUR_PORTFOLIO_FILE_ID')) {
@@ -40,6 +50,10 @@ export default function Hero({ personalInfo, lang }: HeroProps) {
       }
     }
   };
+
+  const service1Image = services && services[0]?.imageUrl || "/src/assets/images/brand_identity_1780983323908.png";
+  const service2Image = services && services[1]?.imageUrl || "/src/assets/images/jersey_design_1780983307716.png";
+  const service3Image = services && services[2]?.imageUrl || "/src/assets/images/laptop_web_dev_1780983341066.png";
 
   return (
     <section id="home" className="relative lg:min-h-[85vh] pt-20 pb-10 flex items-center overflow-hidden bg-radial-gradient">
@@ -112,12 +126,25 @@ export default function Hero({ personalInfo, lang }: HeroProps) {
               {t.toolsIUse}
             </span>
             <div className="flex flex-wrap gap-2.5">
-              {tools.map((tool) => (
+              {displayTools.map((tool) => (
                 <div
                   key={tool.name}
-                  className={`px-3 py-1.5 border text-xs font-mono font-bold tracking-tight rounded-xs transition-transform duration-300 hover:scale-105 ${tool.color}`}
+                  className="px-3 py-1.5 border text-xs font-mono font-bold tracking-tight rounded-xs transition-transform duration-300 hover:scale-105 flex items-center gap-1.5"
+                  style={{
+                    backgroundColor: `${tool.colorHex}10`,
+                    color: tool.colorHex,
+                    borderColor: `${tool.colorHex}35`
+                  }}
                   title={tool.label}
                 >
+                  {tool.imageUrl ? (
+                    <img 
+                      src={tool.imageUrl} 
+                      alt={tool.label} 
+                      className="w-3.5 h-3.5 object-contain rounded-xs" 
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : null}
                   {tool.name}
                 </div>
               ))}
@@ -144,7 +171,7 @@ export default function Hero({ personalInfo, lang }: HeroProps) {
               </div>
               <div className="flex-1 mt-3 rounded-lg overflow-hidden bg-brand-bg relative">
                 <img
-                  src="/src/assets/images/brand_identity_1780983323908.png"
+                  src={service1Image}
                   alt="Visual Identity"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   referrerPolicy="no-referrer"
@@ -167,7 +194,7 @@ export default function Hero({ personalInfo, lang }: HeroProps) {
               </div>
               <div className="flex-1 mt-3 rounded-lg overflow-hidden bg-brand-bg relative">
                 <img
-                  src="/src/assets/images/jersey_design_1780983307716.png"
+                  src={service2Image}
                   alt="Jersey Design"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   referrerPolicy="no-referrer"
@@ -190,7 +217,7 @@ export default function Hero({ personalInfo, lang }: HeroProps) {
               </div>
               <div className="flex-1 mt-3 rounded-lg overflow-hidden bg-brand-bg relative">
                 <img
-                  src="/src/assets/images/laptop_web_dev_1780983341066.png"
+                  src={service3Image}
                   alt="Web Development"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   referrerPolicy="no-referrer"

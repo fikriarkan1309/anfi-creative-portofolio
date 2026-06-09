@@ -68,6 +68,7 @@ export default function SanityConfigModal({ isOpen, onClose, onConfigSave }: San
     { name: 'projectsCount', type: 'number', title: 'Projects' },
     { name: 'clientsCount', type: 'number', title: 'Clients' },
     { name: 'aboutText', type: 'text', title: 'About Text' },
+    { name: 'aboutPhotoUrl', type: 'url', title: 'About Section Photo URL (e.g., https://...)' },
     { name: 'cvUrl', type: 'url', title: 'Google Drive CV Link' },
     { name: 'portfolioPdfUrl', type: 'url', title: 'Google Drive Portfolio PDF Link' },
     { name: 'logoText', type: 'string', title: 'Logo Text (e.g., ANFI CREATIVE)' },
@@ -76,6 +77,9 @@ export default function SanityConfigModal({ isOpen, onClose, onConfigSave }: San
     { name: 'whatsapp', type: 'string', title: 'WhatsApp' },
     { name: 'email', type: 'string', title: 'Email' },
     { name: 'instagram', type: 'string', title: 'Instagram' },
+    { name: 'linkedinUrl', type: 'url', title: 'LinkedIn URL' },
+    { name: 'behanceUrl', type: 'url', title: 'Behance URL' },
+    { name: 'tiktokUrl', type: 'url', title: 'TikTok URL' },
     { name: 'location', type: 'string', title: 'Location' }
   ]
 }`
@@ -91,7 +95,8 @@ export default function SanityConfigModal({ isOpen, onClose, onConfigSave }: San
     { name: 'category', type: 'string', title: 'Category (Design or Development)' },
     { name: 'level', type: 'number', title: 'Proficiency Level (0-100)' },
     { name: 'abbr', type: 'string', title: '2-Letter Abbreviation (e.g., Fg, Ai)' },
-    { name: 'color', type: 'string', title: 'Brand/Hex Color Code (e.g., #F24E1E)' }
+    { name: 'color', type: 'string', title: 'Brand/Hex Color Code (e.g., #F24E1E)' },
+    { name: 'imageUrl', type: 'url', title: 'Direct Icon/Image Override URL (optional)' }
   ]
 }`
     },
@@ -120,7 +125,13 @@ export default function SanityConfigModal({ isOpen, onClose, onConfigSave }: San
     { name: 'title', type: 'string', title: 'Title' },
     { name: 'category', type: 'string', title: 'Category', options: { list: ['Branding', 'Jersey', 'Website'] } },
     { name: 'imageUrl', type: 'url', title: 'Direct Image URL or Asset' },
-    { name: 'tag', type: 'string', title: 'Project Tag Subtitle' }
+    { name: 'tag', type: 'string', title: 'Project Tag Subtitle' },
+    { name: 'client', type: 'string', title: 'Client Name (optional)' },
+    { name: 'duration', type: 'string', title: 'Project Duration (e.g., 2-3 Weeks) (optional)' },
+    { name: 'deliverables', type: 'string', title: 'Project Deliverables list (optional)' },
+    { name: 'challenge', type: 'text', title: 'Key Challenge (optional)' },
+    { name: 'solution', type: 'text', title: 'Creative Solution (optional)' },
+    { name: 'quote', type: 'text', title: 'Feedback / Quote from client (optional)' }
   ]
 }`
     }

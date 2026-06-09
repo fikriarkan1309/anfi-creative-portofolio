@@ -7,8 +7,7 @@ import {
   CheckCircle,
   Clock,
   ArrowUp,
-  Linkedin,
-  Youtube
+  Linkedin
 } from 'lucide-react';
 import { PersonalInfo } from '../types';
 import { Language, TRANSLATIONS } from '../services/language';
@@ -137,7 +136,7 @@ export default function ContactCTA({ personalInfo, lang }: ContactCTAProps) {
                 <Instagram className="w-3.5 h-3.5" />
               </a>
               <a
-                href="https://linkedin.com"
+                href={personalInfo.linkedinUrl || "https://linkedin.com"}
                 target="_blank"
                 rel="noreferrer noopener"
                 className="w-7 h-7 rounded-full border border-white/10 hover:border-brand-cyan hover:bg-brand-cyan/5 flex items-center justify-center text-[#A0AEC0] hover:text-brand-cyan transition-colors"
@@ -146,13 +145,26 @@ export default function ContactCTA({ personalInfo, lang }: ContactCTAProps) {
                 <Linkedin className="w-3.5 h-3.5" />
               </a>
               <a
-                href="https://youtube.com"
+                href={personalInfo.behanceUrl || "https://behance.net/anficreative"}
                 target="_blank"
                 rel="noreferrer noopener"
                 className="w-7 h-7 rounded-full border border-white/10 hover:border-brand-cyan hover:bg-brand-cyan/5 flex items-center justify-center text-[#A0AEC0] hover:text-brand-cyan transition-colors"
-                title="YouTube"
+                title="Behance"
               >
-                <Youtube className="w-3.5 h-3.5" />
+                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                  <path d="M8.228 15.01c0 .762-.315 1.258-.944 1.488-.344.126-.856.189-1.536.189H4.11v-3.771h1.512c.708 0 1.22.072 1.536.216.711.315 1.07 1.053 1.07 1.878zm-.243-5.068c0 .666-.279 1.134-.837 1.404-.315.153-.783.225-1.404.225H4.11V8.65h1.494c.594 0 1.035.063 1.323.189.693.306 1.058.918 1.058 1.103zm10.741 1.944c-.117-1.125-.99-1.935-2.223-1.935-1.134 0-2.07.783-2.286 1.935zm1.53.531c-.045 2.16-1.575 3.861-4.086 3.861-2.529 0-4.131-1.746-4.131-4.158s1.656-4.221 4.257-4.221c2.619 0 4.023 1.836 3.96 4.518h-6.264c.09 1.206.873 1.971 2.142 1.971.864 0 1.566-.369 1.899-1.071zm-2.43-4.527h-3.411v-.702h3.411zm3.763-1.282C24 3.12 20.88 0 17 0H7C3.12 0 0 3.12 0 7v10c0 3.88 3.12 7 7 7h10c3.88 0 7-3.12 7-7zm-11.83 9.477c0 .666-.18 1.224-.54 1.674-.531.675-1.512 1.008-2.943 1.008H2v-11.34h3.79c1.944 0 3.069.603 3.375 1.809.126.504.189.963.189 1.377 0 1.035-.387 1.773-1.161 2.214.927.468 1.391 1.296 1.391 2.484z" />
+                </svg>
+              </a>
+              <a
+                href={personalInfo.tiktokUrl || "https://tiktok.com/@anficreative"}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="w-7 h-7 rounded-full border border-white/10 hover:border-brand-cyan hover:bg-brand-cyan/5 flex items-center justify-center text-[#A0AEC0] hover:text-brand-cyan transition-colors"
+                title="TikTok"
+              >
+                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                  <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.59 4.18.91 1.09 2.17 1.81 3.54 2.06v3.86c-1.3-.12-2.56-.63-3.62-1.39-.73-.52-1.36-1.18-1.85-1.95v7.6c.06 2.66-1.15 5.23-3.23 6.89-2.12 1.75-5.03 2.37-7.66 1.62-2.61-.71-4.78-2.61-5.63-5.18-.94-2.73-.42-5.91 1.41-8.15 1.74-2.18 4.49-3.27 7.23-2.9v3.82c-1.5-.15-3.03.35-4.01 1.5-.96 1.07-1.16 2.68-.53 3.95.63 1.33 2.04 2.16 3.52 2.08 1.74-.01 3.23-1.42 3.28-3.16V0zm0 0" />
+                </svg>
               </a>
             </div>
           </div>
