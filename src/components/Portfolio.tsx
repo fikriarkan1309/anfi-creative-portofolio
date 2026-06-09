@@ -161,9 +161,9 @@ export default function Portfolio({ projects, personalInfo, lang }: PortfolioPro
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10"
         >
           <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project) => (
+            {filteredProjects.map((project, index) => (
               <motion.div
-                key={project.id}
+                key={project.id || `project-${index}`}
                 layout
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}

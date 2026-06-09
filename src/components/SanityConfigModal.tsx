@@ -1,6 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Save, Database, Info, Copy, Check } from 'lucide-react';
+import { X, Save, Database, Info, Copy, Check, Share2, Smartphone } from 'lucide-react';
 
 interface SanityConfigModalProps {
   isOpen: boolean;
@@ -9,10 +9,11 @@ interface SanityConfigModalProps {
 }
 
 export default function SanityConfigModal({ isOpen, onClose, onConfigSave }: SanityConfigModalProps) {
-  const [projectId, setProjectId] = useState(() => localStorage.getItem('SANITY_PROJECT_ID') || '');
+  const [projectId, setProjectId] = useState(() => localStorage.getItem('SANITY_PROJECT_ID') || 'sft5jjse');
   const [dataset, setDataset] = useState(() => localStorage.getItem('SANITY_DATASET') || 'production');
   const [connectionStatus, setConnectionStatus] = useState<'idle' | 'success' | 'failed'>('idle');
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [copiedSync, setCopiedSync] = useState(false);
 
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
@@ -28,8 +29,19 @@ export default function SanityConfigModal({ isOpen, onClose, onConfigSave }: San
 
     // Attempt verification fetch on active config
     try {
-      const url = `https://${projectId}.api.sanity.io/v2022-03-07/data/query/${dataset}?query=${encodeURIComponent('*[_type == "personalInfo"][0]')}`;
-      const res = await fetch(url);
+      const queryStr = '*[_type == "personalInfo"][0]';
+      const encodedQuery = encodeURIComponent(queryStr);
+      const proxyUrl = `/api/sanity?projectId=${projectId}&dataset=${dataset}&query=${encodedQuery}`;
+      
+      // 1. First try validating via our backend API proxy (immune to CORS limits)
+      let res = await fetch(proxyUrl);
+      
+      // 2. If backend proxy returns not ok, fallback to direct browser fetch
+      if (!res.ok) {
+        const directUrl = `https://${projectId}.api.sanity.io/v2022-03-07/data/query/${dataset}?query=${encodedQuery}`;
+        res = await fetch(directUrl);
+      }
+      
       if (res.ok) {
         setConnectionStatus('success');
         localStorage.setItem('SANITY_PROJECT_ID', projectId);
@@ -43,6 +55,22 @@ export default function SanityConfigModal({ isOpen, onClose, onConfigSave }: San
         setConnectionStatus('failed');
       }
     } catch {
+      // Direct retry on exception
+      try {
+        const directUrl = `https://${projectId}.api.sanity.io/v2022-03-07/data/query/${dataset}?query=${encodeURIComponent('*[_type == "personalInfo"][0]')}`;
+        const res = await fetch(directUrl);
+        if (res.ok) {
+          setConnectionStatus('success');
+          localStorage.setItem('SANITY_PROJECT_ID', projectId);
+          localStorage.setItem('SANITY_DATASET', dataset);
+          onConfigSave(projectId, dataset);
+          setTimeout(() => {
+            setConnectionStatus('idle');
+            onClose();
+          }, 1500);
+          return;
+        }
+      } catch {}
       setConnectionStatus('failed');
     }
   };
@@ -286,6 +314,54 @@ export default function SanityConfigModal({ isOpen, onClose, onConfigSave }: San
                   </button>
                 </div>
               </form>
+
+              {/* Mobile Synchronization Helper */}
+              {localStorage.getItem('SANITY_PROJECT_ID') && (
+                <div className="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-lg flex flex-col gap-3">
+                  <div className="flex items-center gap-2.5 text-emerald-400">
+                    <Smartphone className="w-5 h-5 shrink-0" />
+                    <span className="font-display font-bold text-xs tracking-wider uppercase text-white">
+                      Sinkronisasi ke HP / Mobile
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#A0ECF0]/80 leading-relaxed">
+                    Karena data CMS disimpan di browser perangkat ini (LocalStorage), Anda perlu menyinkronkan data ke HP Anda agar tampilan di HP tidak kembali ke default. Klik tombol di bawah untuk menyalin link sinkronisasi khusus, kirim link tersebut ke HP Anda (contoh: lewat WA/Instagram/Email), lalu buka di browser HP Anda sekali saja!
+                  </p>
+                  
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const activeId = localStorage.getItem('SANITY_PROJECT_ID') || '';
+                        const activeDataset = localStorage.getItem('SANITY_DATASET') || 'production';
+                        const syncUrl = `${window.location.origin}${window.location.pathname}?sanityId=${activeId}&sanityDataset=${activeDataset}`;
+                        navigator.clipboard.writeText(syncUrl);
+                        setCopiedSync(true);
+                        setTimeout(() => setCopiedSync(false), 3000);
+                      }}
+                      className="inline-flex items-center gap-2 border border-emerald-500/40 bg-emerald-950/20 hover:bg-emerald-900/30 text-emerald-400 font-display text-xs font-bold tracking-wider rounded-xs py-2 px-4 transition-all duration-300 cursor-pointer"
+                    >
+                      {copiedSync ? (
+                        <>
+                          <Check className="w-4 h-4 text-green-400" />
+                          LINK TERSALIN! (READY TO SHARE)
+                        </>
+                      ) : (
+                        <>
+                          <Share2 className="w-4 h-4" />
+                          SALIN LINK SINKRONISASI
+                        </>
+                      )}
+                    </button>
+                    
+                    {copiedSync && (
+                      <span className="text-[10px] font-mono text-emerald-400/90 animate-pulse">
+                        ✓ Kirim link ini dan buka di HP Anda sekali!
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Schema blueprints */}
               <div className="border-t border-white/5 pt-6">

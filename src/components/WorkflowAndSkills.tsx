@@ -201,7 +201,7 @@ export default function WorkflowAndSkills({
 
               return (
                 <motion.div
-                  key={test.id}
+                  key={test.id || `test-${index}`}
                   initial={{ opacity: 0, x: 15 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
