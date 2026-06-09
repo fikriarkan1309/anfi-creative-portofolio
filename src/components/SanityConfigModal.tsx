@@ -68,10 +68,45 @@ export default function SanityConfigModal({ isOpen, onClose, onConfigSave }: San
     { name: 'projectsCount', type: 'number', title: 'Projects' },
     { name: 'clientsCount', type: 'number', title: 'Clients' },
     { name: 'aboutText', type: 'text', title: 'About Text' },
+    { name: 'cvUrl', type: 'url', title: 'Google Drive CV Link' },
+    { name: 'portfolioPdfUrl', type: 'url', title: 'Google Drive Portfolio PDF Link' },
+    { name: 'logoText', type: 'string', title: 'Logo Text (e.g., ANFI CREATIVE)' },
+    { name: 'logoSubtext', type: 'string', title: 'Logo Subtext (e.g., DESIGN • APPAREL • WEB)' },
+    { name: 'hideCmsSettings', type: 'boolean', title: 'Hide CMS Settings Button from Public?' },
     { name: 'whatsapp', type: 'string', title: 'WhatsApp' },
     { name: 'email', type: 'string', title: 'Email' },
     { name: 'instagram', type: 'string', title: 'Instagram' },
     { name: 'location', type: 'string', title: 'Location' }
+  ]
+}`
+    },
+    {
+      name: 'skill.ts',
+      code: `export default {
+  name: 'skill',
+  title: 'Tools / Skill',
+  type: 'document',
+  fields: [
+    { name: 'name', type: 'string', title: 'Tool / Skill Name (e.g., Figma)' },
+    { name: 'category', type: 'string', title: 'Category (Design or Development)' },
+    { name: 'level', type: 'number', title: 'Proficiency Level (0-100)' },
+    { name: 'abbr', type: 'string', title: '2-Letter Abbreviation (e.g., Fg, Ai)' },
+    { name: 'color', type: 'string', title: 'Brand/Hex Color Code (e.g., #F24E1E)' }
+  ]
+}`
+    },
+    {
+      name: 'testimonial.ts',
+      code: `export default {
+  name: 'testimonial',
+  title: 'Testimonial',
+  type: 'document',
+  fields: [
+    { name: 'author', type: 'string', title: 'Author Name' },
+    { name: 'role', type: 'string', title: 'Role / Designation' },
+    { name: 'quote', type: 'text', title: 'Client Feedback' },
+    { name: 'rating', type: 'number', title: 'Rating (1-5)' },
+    { name: 'avatarUrl', type: 'url', title: 'Client Avatar URL (or leave empty for initials)' }
   ]
 }`
     },
