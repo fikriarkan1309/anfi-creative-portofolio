@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform } from 'motion/react';
 import { Mail, ArrowUpRight } from 'lucide-react';
 import { PersonalInfo, ServiceItem, SkillItem } from '../types';
 import { Language, TRANSLATIONS } from '../services/language';
+import { urlForImage } from '../services/sanity';
 
 interface HeroProps {
   personalInfo: PersonalInfo;
@@ -25,7 +26,7 @@ export default function Hero({ personalInfo, services, skills, lang }: HeroProps
         name: s.abbr,
         label: s.name,
         colorHex: s.color,
-        imageUrl: s.imageUrl
+        imageUrl: s.imageUrl ? urlForImage(s.imageUrl) : undefined
       }))
     : [
         { name: 'Ai', label: 'Illustrator', colorHex: '#FF7F00' },
@@ -51,9 +52,9 @@ export default function Hero({ personalInfo, services, skills, lang }: HeroProps
     }
   };
 
-  const service1Image = services && services[0]?.imageUrl || "/src/assets/images/brand_identity_1780983323908.png";
-  const service2Image = services && services[1]?.imageUrl || "/src/assets/images/jersey_design_1780983307716.png";
-  const service3Image = services && services[2]?.imageUrl || "/src/assets/images/laptop_web_dev_1780983341066.png";
+  const service1Image = services && services[0]?.imageUrl ? urlForImage(services[0].imageUrl) : "/src/assets/images/brand_identity_1780983323908.png";
+  const service2Image = services && services[1]?.imageUrl ? urlForImage(services[1].imageUrl) : "/src/assets/images/jersey_design_1780983307716.png";
+  const service3Image = services && services[2]?.imageUrl ? urlForImage(services[2].imageUrl) : "/src/assets/images/laptop_web_dev_1780983341066.png";
 
   return (
     <section id="home" className="relative lg:min-h-[85vh] pt-20 pb-10 flex items-center overflow-hidden bg-radial-gradient">

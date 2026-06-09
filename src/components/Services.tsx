@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { ArrowUpRight } from 'lucide-react';
 import { ServiceItem } from '../types';
 import { Language, TRANSLATIONS } from '../services/language';
+import { urlForImage } from '../services/sanity';
 
 interface ServicesProps {
   services: ServiceItem[];
@@ -102,7 +103,7 @@ export default function Services({ services, lang }: ServicesProps) {
                 {/* Service image showcase mock inside card */}
                 <div className="mt-auto relative rounded-lg overflow-hidden h-[120px] bg-slate-900/60 border border-white/5 group">
                   <img
-                    src={service.imageUrl}
+                    src={urlForImage(service.imageUrl)}
                     alt={service.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     referrerPolicy="no-referrer"

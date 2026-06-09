@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ArrowUpRight, X, Calendar, Layers, ShieldCheck, ExternalLink } from 'lucide-react';
 import { ProjectItem, PersonalInfo } from '../types';
 import { Language, TRANSLATIONS } from '../services/language';
+import { urlForImage } from '../services/sanity';
 
 interface PortfolioProps {
   projects: ProjectItem[];
@@ -175,7 +176,7 @@ export default function Portfolio({ projects, personalInfo, lang }: PortfolioPro
                 {/* Product/Design Preview canvas */}
                 <div className="relative overflow-hidden aspect-4/3 bg-[#0A0D11] border-b border-white/5 flex items-center justify-center p-3">
                   <img
-                    src={project.imageUrl}
+                    src={urlForImage(project.imageUrl)}
                     alt={project.title}
                     className="w-full h-full object-cover rounded-lg shadow-lg group-hover:scale-103 duration-500 transition-transform"
                     referrerPolicy="no-referrer"
@@ -252,7 +253,7 @@ export default function Portfolio({ projects, personalInfo, lang }: PortfolioPro
                 {/* Header Canvas Area */}
                 <div className="relative h-[220px] md:h-[280px] bg-slate-950 flex items-center justify-center overflow-hidden border-b border-white/5">
                   <img
-                    src={selectedProject.imageUrl}
+                    src={urlForImage(selectedProject.imageUrl)}
                     alt={selectedProject.title}
                     className="w-full h-full object-cover opacity-85"
                     referrerPolicy="no-referrer"

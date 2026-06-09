@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ArrowUpRight, Menu, X, Globe } from 'lucide-react';
 import { Language, TRANSLATIONS } from '../services/language';
 import { PersonalInfo } from '../types';
+import { urlForImage } from '../services/sanity';
 
 interface HeaderProps {
   personalInfo: PersonalInfo;
@@ -37,6 +38,7 @@ export default function Header({ personalInfo, lang, onLangChange, onContactClic
 
   const logoText = personalInfo.logoText || 'ANFI CREATIVE';
   const logoSubtext = personalInfo.logoSubtext || 'DESIGN • APPAREL • WEB';
+  const logoImg = personalInfo.logoImageUrl ? urlForImage(personalInfo.logoImageUrl) : '';
 
   return (
     <header
@@ -47,11 +49,20 @@ export default function Header({ personalInfo, lang, onLangChange, onContactClic
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         {/* Logo Section */}
         <a href="#home" className="flex items-center gap-3 group">
-          <div className="relative w-8 h-8 flex items-center justify-center border-2 border-brand-cyan rotate-45 overflow-hidden transition-transform duration-500 group-hover:rotate-225">
-            <span className="text-brand-cyan font-bold -rotate-45 text-sm uppercase">
-              {logoText.charAt(0)}
-            </span>
-          </div>
+          {logoImg ? (
+            <img 
+              src={logoImg} 
+              alt={logoText} 
+              className="w-10 h-10 object-contain transition-transform duration-500 group-hover:scale-105 rounded-xs"
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <div className="relative w-8 h-8 flex items-center justify-center border-2 border-brand-cyan rotate-45 overflow-hidden transition-transform duration-500 group-hover:rotate-225">
+              <span className="text-brand-cyan font-bold -rotate-45 text-sm uppercase">
+                {logoText.charAt(0)}
+              </span>
+            </div>
+          )}
           <div>
             <div className="font-display font-bold tracking-widest text-[#FFFFFF] text-sm md:text-base uppercase">
               {logoText}

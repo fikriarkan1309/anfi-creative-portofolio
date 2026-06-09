@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { Award, Briefcase, Users, Download } from 'lucide-react';
 import { PersonalInfo } from '../types';
 import { Language, TRANSLATIONS } from '../services/language';
+import { urlForImage } from '../services/sanity';
 
 interface AboutProps {
   personalInfo: PersonalInfo;
@@ -72,7 +73,7 @@ export default function About({ personalInfo, lang }: AboutProps) {
             {/* The Floating Image Area */}
             <div className="relative w-full h-full rounded-2xl border border-white/5 bg-[#0D1219]/65 overflow-hidden flex flex-col justify-end">
               <img
-                src={personalInfo.aboutPhotoUrl || "/src/assets/images/fikri_portrait_1780983289777.png"}
+                src={urlForImage(personalInfo.aboutPhotoUrl) || "/src/assets/images/fikri_portrait_1780983289777.png"}
                 alt="Fikri Arkan Portrait"
                 className="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-104 group-hover:brightness-105"
                 referrerPolicy="no-referrer"

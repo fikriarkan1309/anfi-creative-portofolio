@@ -68,11 +68,12 @@ export default function SanityConfigModal({ isOpen, onClose, onConfigSave }: San
     { name: 'projectsCount', type: 'number', title: 'Projects' },
     { name: 'clientsCount', type: 'number', title: 'Clients' },
     { name: 'aboutText', type: 'text', title: 'About Text' },
-    { name: 'aboutPhotoUrl', type: 'url', title: 'About Section Photo URL (e.g., https://...)' },
+    { name: 'aboutPhotoUrl', type: 'image', title: 'About Section Photo (Upload Image)', options: { hotspot: true } },
     { name: 'cvUrl', type: 'url', title: 'Google Drive CV Link' },
     { name: 'portfolioPdfUrl', type: 'url', title: 'Google Drive Portfolio PDF Link' },
     { name: 'logoText', type: 'string', title: 'Logo Text (e.g., ANFI CREATIVE)' },
     { name: 'logoSubtext', type: 'string', title: 'Logo Subtext (e.g., DESIGN • APPAREL • WEB)' },
+    { name: 'logoImageUrl', type: 'image', title: 'Logo Image override (Upload Icon/Logo instead of Monogram Text)', options: { hotspot: true } },
     { name: 'hideCmsSettings', type: 'boolean', title: 'Hide CMS Settings Button from Public?' },
     { name: 'whatsapp', type: 'string', title: 'WhatsApp' },
     { name: 'email', type: 'string', title: 'Email' },
@@ -81,6 +82,21 @@ export default function SanityConfigModal({ isOpen, onClose, onConfigSave }: San
     { name: 'behanceUrl', type: 'url', title: 'Behance URL' },
     { name: 'tiktokUrl', type: 'url', title: 'TikTok URL' },
     { name: 'location', type: 'string', title: 'Location' }
+  ]
+}`
+    },
+    {
+      name: 'service.ts',
+      code: `export default {
+  name: 'service',
+  title: 'Service Category',
+  type: 'document',
+  fields: [
+    { name: 'title', type: 'string', title: 'Service Title' },
+    { name: 'index', type: 'string', title: 'Index (e.g., 01, 02, 03)' },
+    { name: 'description', type: 'text', title: 'Short Description' },
+    { name: 'features', type: 'array', of: [{type: 'string'}], title: 'Bullets / Features List' },
+    { name: 'imageUrl', type: 'image', title: 'Showcase Thumbnail Image (Upload)', options: { hotspot: true } }
   ]
 }`
     },
@@ -96,7 +112,40 @@ export default function SanityConfigModal({ isOpen, onClose, onConfigSave }: San
     { name: 'level', type: 'number', title: 'Proficiency Level (0-100)' },
     { name: 'abbr', type: 'string', title: '2-Letter Abbreviation (e.g., Fg, Ai)' },
     { name: 'color', type: 'string', title: 'Brand/Hex Color Code (e.g., #F24E1E)' },
-    { name: 'imageUrl', type: 'url', title: 'Direct Icon/Image Override URL (optional)' }
+    { name: 'imageUrl', type: 'image', title: 'Direct Icon/Image Upload (optional)', options: { hotspot: true } }
+  ]
+}`
+    },
+    {
+      name: 'project.ts',
+      code: `export default {
+  name: 'project',
+  title: 'Project',
+  type: 'document',
+  fields: [
+    { name: 'title', type: 'string', title: 'Title' },
+    { name: 'category', type: 'string', title: 'Category', options: { list: ['Branding', 'Jersey', 'Website'] } },
+    { name: 'imageUrl', type: 'image', title: 'Project Banner Image (Upload)', options: { hotspot: true } },
+    { name: 'tag', type: 'string', title: 'Project Tag Subtitle' },
+    { name: 'client', type: 'string', title: 'Client Name (optional)' },
+    { name: 'duration', type: 'string', title: 'Project Duration (e.g., 2-3 Weeks) (optional)' },
+    { name: 'deliverables', type: 'string', title: 'Project Deliverables list (optional)' },
+    { name: 'challenge', type: 'text', title: 'Key Challenge (optional)' },
+    { name: 'solution', type: 'text', title: 'Creative Solution (optional)' },
+    { name: 'quote', type: 'text', title: 'Feedback / Quote from client (optional)' }
+  ]
+}`
+    },
+    {
+      name: 'process.ts',
+      code: `export default {
+  name: 'process',
+  title: 'Workflow Process Step',
+  type: 'document',
+  fields: [
+    { name: 'step', type: 'string', title: 'Step Number (e.g., 01, 02)' },
+    { name: 'title', type: 'string', title: 'Title' },
+    { name: 'description', type: 'text', title: 'Description' }
   ]
 }`
     },
@@ -111,27 +160,7 @@ export default function SanityConfigModal({ isOpen, onClose, onConfigSave }: San
     { name: 'role', type: 'string', title: 'Role / Designation' },
     { name: 'quote', type: 'text', title: 'Client Feedback' },
     { name: 'rating', type: 'number', title: 'Rating (1-5)' },
-    { name: 'avatarUrl', type: 'url', title: 'Client Avatar URL (or leave empty for initials)' }
-  ]
-}`
-    },
-    {
-      name: 'project.ts',
-      code: `export default {
-  name: 'project',
-  title: 'Project',
-  type: 'document',
-  fields: [
-    { name: 'title', type: 'string', title: 'Title' },
-    { name: 'category', type: 'string', title: 'Category', options: { list: ['Branding', 'Jersey', 'Website'] } },
-    { name: 'imageUrl', type: 'url', title: 'Direct Image URL or Asset' },
-    { name: 'tag', type: 'string', title: 'Project Tag Subtitle' },
-    { name: 'client', type: 'string', title: 'Client Name (optional)' },
-    { name: 'duration', type: 'string', title: 'Project Duration (e.g., 2-3 Weeks) (optional)' },
-    { name: 'deliverables', type: 'string', title: 'Project Deliverables list (optional)' },
-    { name: 'challenge', type: 'text', title: 'Key Challenge (optional)' },
-    { name: 'solution', type: 'text', title: 'Creative Solution (optional)' },
-    { name: 'quote', type: 'text', title: 'Feedback / Quote from client (optional)' }
+    { name: 'avatarUrl', type: 'image', title: 'Client Avatar Photo (Upload) (optional)', options: { hotspot: true } }
   ]
 }`
     }

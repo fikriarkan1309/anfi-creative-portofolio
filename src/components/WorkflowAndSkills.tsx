@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { Star } from 'lucide-react';
 import { SkillItem, TestimonialItem, ProcessItem } from '../types';
 import { Language, TRANSLATIONS } from '../services/language';
+import { urlForImage } from '../services/sanity';
 
 interface WorkflowAndSkillsProps {
   skills: SkillItem[];
@@ -123,7 +124,7 @@ export default function WorkflowAndSkills({
                       title={`${skill.name} - ${skill.level}%`}
                     >
                       {skill.imageUrl ? (
-                        <img src={skill.imageUrl} alt={skill.name} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
+                        <img src={urlForImage(skill.imageUrl)} alt={skill.name} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
                       ) : (
                         <span className="font-mono text-xs font-extrabold" style={{ color: skill.color }}>
                           {skill.abbr}
@@ -158,7 +159,7 @@ export default function WorkflowAndSkills({
                       title={`${skill.name} - ${skill.level}%`}
                     >
                       {skill.imageUrl ? (
-                        <img src={skill.imageUrl} alt={skill.name} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
+                        <img src={urlForImage(skill.imageUrl)} alt={skill.name} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
                       ) : (
                         <span className="font-mono text-xs font-extrabold" style={{ color: skill.color }}>
                           {skill.abbr}
