@@ -180,8 +180,6 @@ export const FALLBACK_TESTIMONIALS: TestimonialItem[] = [
 ];
 
 // Sanity client configuration
-const SANITY_PROJECT_ID = (import.meta as any).env?.VITE_SANITY_PROJECT_ID || '';
-const SANITY_DATASET = (import.meta as any).env?.VITE_SANITY_DATASET || 'production';
 const SANITY_API_VERSION = 'v2022-03-07';
 
 /**
@@ -190,12 +188,15 @@ const SANITY_API_VERSION = 'v2022-03-07';
  * while utilizing a durable, highly styled native TS model.
  */
 async function fetchFromSanity<T>(query: string): Promise<T | null> {
-  if (!SANITY_PROJECT_ID) {
+  const projectId = (typeof window !== 'undefined' ? localStorage.getItem('SANITY_PROJECT_ID') : '') || (import.meta as any).env?.VITE_SANITY_PROJECT_ID || '';
+  const dataset = (typeof window !== 'undefined' ? localStorage.getItem('SANITY_DATASET') : '') || (import.meta as any).env?.VITE_SANITY_DATASET || 'production';
+
+  if (!projectId) {
     return null;
   }
   
   const encodedQuery = encodeURIComponent(query);
-  const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodedQuery}`;
+  const url = `https://${projectId}.api.sanity.io/${SANITY_API_VERSION}/data/query/${dataset}?query=${encodedQuery}`;
   
   try {
     const res = await fetch(url);
