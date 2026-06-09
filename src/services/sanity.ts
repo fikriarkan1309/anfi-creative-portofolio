@@ -10,11 +10,15 @@ export const FALLBACK_PERSONAL_INFO: PersonalInfo = {
   projectsCount: 100,
   clientsCount: 50,
   aboutText: 'Saya adalah Graphic Designer dan Web Developer yang berfokus pada Visual Identity, Apparel Design, dan pembuatan Website modern. Saya senang membantu brand dan bisnis untuk tampil lebih profesional, kuat, dan berkesan.',
+  aboutPhotoUrl: '/src/assets/images/fikri_portrait_1780983289777.png',
   cvUrl: 'https://drive.google.com/file/d/YOUR_CV_FILE_ID/view?usp=sharing', // EDIT SINI UNTUK LINK DOWNLOAD CV
   portfolioPdfUrl: 'https://drive.google.com/file/d/YOUR_PORTFOLIO_FILE_ID/view?usp=sharing', // EDIT SINI UNTUK LINK GOOGLE DRIVE PORTFOLIO PDF
   whatsapp: '+6282121309886', // Silakan edit sesuai nomor WA asli Fikri
   email: 'fikriarkan1309@gmail.com', // Sesuai email login fikriarkan1309
   instagram: '@anficreative_',
+  linkedinUrl: 'https://linkedin.com',
+  behanceUrl: 'https://behance.net/anficreative',
+  tiktokUrl: 'https://tiktok.com/@anficreative',
   location: 'Indonesia',
   logoText: 'ANFI CREATIVE',
   logoSubtext: 'DESIGN • APPAREL • WEB',
