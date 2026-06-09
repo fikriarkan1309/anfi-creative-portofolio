@@ -6,11 +6,15 @@ export interface PersonalInfo {
   projectsCount: number;
   clientsCount: number;
   aboutText: string;
+  aboutPhotoUrl?: string; // Dynamic about image
   cvUrl?: string;
   portfolioPdfUrl?: string;
   whatsapp: string;
   email: string;
   instagram: string;
+  linkedinUrl?: string; // Linkedin URL
+  behanceUrl?: string; // Behance URL
+  tiktokUrl?: string; // Tiktok URL
   location: string;
   logoText?: string;
   logoSubtext?: string;
@@ -32,6 +36,12 @@ export interface ProjectItem {
   category: 'Branding' | 'Jersey' | 'Website';
   imageUrl: string;
   tag: string;
+  client?: string;       // Dynamic case study client
+  duration?: string;     // Dynamic case study duration
+  deliverables?: string; // Dynamic case study deliverables
+  challenge?: string;    // Dynamic case study challenge
+  solution?: string;     // Dynamic case study solution
+  quote?: string;        // Dynamic case study feedback quote
 }
 
 export interface SkillItem {
@@ -40,6 +50,7 @@ export interface SkillItem {
   level: number; // 0-100
   abbr: string;
   color: string;
+  imageUrl?: string; // Dynamic icon/image override
 }
 
 export interface TestimonialItem {

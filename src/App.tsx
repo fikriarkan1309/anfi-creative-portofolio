@@ -100,13 +100,13 @@ export default function App() {
         onSanitySetOpen={() => setIsConfigOpen(true)}
       />
 
-      <Hero personalInfo={personalInfo} lang={lang} />
+      <Hero personalInfo={personalInfo} services={services} skills={skills} lang={lang} />
 
       <About personalInfo={personalInfo} lang={lang} />
 
       <Services services={services} lang={lang} />
 
-      <Portfolio projects={projects} lang={lang} />
+      <Portfolio projects={projects} personalInfo={personalInfo} lang={lang} />
 
       <WorkflowAndSkills
         skills={skills}
