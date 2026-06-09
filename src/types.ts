@@ -20,6 +20,12 @@ export interface PersonalInfo {
   logoSubtext?: string;
   logoImageUrl?: any; // Dynamic logo image (supports string or Sanity Image Object)
   hideCmsSettings?: boolean;
+  heroBrandingTitle?: string;
+  heroBrandingImage?: any;
+  heroApparelTitle?: string;
+  heroApparelImage?: any;
+  heroWebTitle?: string;
+  heroWebImage?: any;
 }
 
 export interface ServiceItem {
