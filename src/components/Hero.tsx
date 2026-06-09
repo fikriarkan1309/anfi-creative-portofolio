@@ -52,9 +52,13 @@ export default function Hero({ personalInfo, services, skills, lang }: HeroProps
     }
   };
 
-  const service1Image = services && services[0]?.imageUrl ? urlForImage(services[0].imageUrl) : "/src/assets/images/brand_identity_1780983323908.png";
-  const service2Image = services && services[1]?.imageUrl ? urlForImage(services[1].imageUrl) : "/src/assets/images/jersey_design_1780983307716.png";
-  const service3Image = services && services[2]?.imageUrl ? urlForImage(services[2].imageUrl) : "/src/assets/images/laptop_web_dev_1780983341066.png";
+  const service1Title = personalInfo.heroBrandingTitle || (lang === 'id' ? 'BRANDING YANG DIPERCAYA' : 'BRANDING THAT BUILDS TRUST');
+  const service2Title = personalInfo.heroApparelTitle || (lang === 'id' ? 'DESAIN UNTUK IDENTITAS TIM' : 'DESIGN THAT REPRESENTS pride');
+  const service3Title = personalInfo.heroWebTitle || (lang === 'id' ? 'WEBSITE DENGAN LOAD CEPAT' : 'WEBSITES THAT DRIVE GROWTH');
+
+  const service1Image = personalInfo.heroBrandingImage ? urlForImage(personalInfo.heroBrandingImage) : "/src/assets/images/brand_identity_1780983323908.png";
+  const service2Image = personalInfo.heroApparelImage ? urlForImage(personalInfo.heroApparelImage) : "/src/assets/images/jersey_design_1780983307716.png";
+  const service3Image = personalInfo.heroWebImage ? urlForImage(personalInfo.heroWebImage) : "/src/assets/images/laptop_web_dev_1780983341066.png";
 
   return (
     <section id="home" className="relative lg:min-h-[85vh] pt-20 pb-10 flex items-center overflow-hidden bg-radial-gradient">
@@ -167,7 +171,7 @@ export default function Hero({ personalInfo, services, skills, lang }: HeroProps
                   {t.serviceTags.branding}
                 </span>
                 <span className="text-[10px] text-white/90 font-bold block mt-1 leading-tight uppercase font-display">
-                  {lang === 'id' ? 'BRANDING YANG DIPERCAYA' : 'BRANDING THAT BUILDS TRUST'}
+                  {service1Title}
                 </span>
               </div>
               <div className="flex-1 mt-3 rounded-lg overflow-hidden bg-brand-bg relative">
@@ -190,7 +194,7 @@ export default function Hero({ personalInfo, services, skills, lang }: HeroProps
                   {t.serviceTags.jersey}
                 </span>
                 <span className="text-[10px] text-white/90 font-bold block mt-1 leading-tight uppercase font-display">
-                  {lang === 'id' ? 'DESAIN UNTUK IDENTITAS TIM' : 'DESIGN THAT REPRESENTS pride'}
+                  {service2Title}
                 </span>
               </div>
               <div className="flex-1 mt-3 rounded-lg overflow-hidden bg-brand-bg relative">
@@ -213,7 +217,7 @@ export default function Hero({ personalInfo, services, skills, lang }: HeroProps
                   {t.serviceTags.website}
                 </span>
                 <span className="text-[10px] text-white/90 font-bold block mt-1 leading-tight uppercase font-display">
-                  {lang === 'id' ? 'WEBSITE DENGAN LOAD CEPAT' : 'WEBSITES THAT DRIVE GROWTH'}
+                  {service3Title}
                 </span>
               </div>
               <div className="flex-1 mt-3 rounded-lg overflow-hidden bg-brand-bg relative">
