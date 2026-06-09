@@ -6,7 +6,7 @@ export interface PersonalInfo {
   projectsCount: number;
   clientsCount: number;
   aboutText: string;
-  aboutPhotoUrl?: string; // Dynamic about image
+  aboutPhotoUrl?: any; // Dynamic about image (supports string or Sanity Image Object)
   cvUrl?: string;
   portfolioPdfUrl?: string;
   whatsapp: string;
@@ -18,6 +18,7 @@ export interface PersonalInfo {
   location: string;
   logoText?: string;
   logoSubtext?: string;
+  logoImageUrl?: any; // Dynamic logo image (supports string or Sanity Image Object)
   hideCmsSettings?: boolean;
 }
 
@@ -27,14 +28,14 @@ export interface ServiceItem {
   title: string;
   description: string;
   features: string[];
-  imageUrl: string;
+  imageUrl: any; // Dynamic image (supports string or Sanity Image Object)
 }
 
 export interface ProjectItem {
   id: string;
   title: string;
   category: 'Branding' | 'Jersey' | 'Website';
-  imageUrl: string;
+  imageUrl: any; // Dynamic image (supports string or Sanity Image Object)
   tag: string;
   client?: string;       // Dynamic case study client
   duration?: string;     // Dynamic case study duration
@@ -50,7 +51,7 @@ export interface SkillItem {
   level: number; // 0-100
   abbr: string;
   color: string;
-  imageUrl?: string; // Dynamic icon/image override
+  imageUrl?: any; // Dynamic icon/image override (supports string or Sanity Image Object)
 }
 
 export interface TestimonialItem {
@@ -59,7 +60,7 @@ export interface TestimonialItem {
   role: string;
   quote: string;
   rating: number;
-  avatarUrl?: string;
+  avatarUrl?: any; // Dynamic avatar (supports string or Sanity Image Object)
 }
 
 export interface ProcessItem {
