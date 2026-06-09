@@ -204,12 +204,30 @@ export default function SanityConfigModal({ isOpen, onClose, onConfigSave }: San
                 </div>
 
                 <div className="flex justify-between items-center mt-2">
-                  <div className="text-[11px] font-mono">
+                  <div className="text-[11px] font-mono flex flex-col gap-1">
                     {connectionStatus === 'success' && (
                       <span className="text-green-400">✓ Connected successfully! Page refreshing...</span>
                     )}
                     {connectionStatus === 'failed' && (
-                      <span className="text-red-400">✗ Connection failed. Check inputs &amp; CORS rules.</span>
+                      <>
+                        <span className="text-red-400 font-bold">✗ Connection failed. Check inputs &amp; CORS rules.</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            localStorage.setItem('SANITY_PROJECT_ID', projectId);
+                            localStorage.setItem('SANITY_DATASET', dataset);
+                            onConfigSave(projectId, dataset);
+                            setConnectionStatus('success');
+                            setTimeout(() => {
+                              setConnectionStatus('idle');
+                              onClose();
+                            }, 1000);
+                          }}
+                          className="text-brand-cyan hover:underline hover:text-white text-left text-[10px] uppercase font-bold tracking-wider mt-1 cursor-pointer"
+                        >
+                          → Tetap Simpan (Save Anyway)
+                        </button>
+                      </>
                     )}
                   </div>
                   
