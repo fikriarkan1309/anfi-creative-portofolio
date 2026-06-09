@@ -187,6 +187,39 @@ export const FALLBACK_TESTIMONIALS: TestimonialItem[] = [
 const SANITY_API_VERSION = 'v2022-03-07';
 
 /**
+ * Robust utility to resolve Sanity images into standard image URLs.
+ * Supports both raw URL strings and Sanity native image objects with an asset reference (_ref).
+ */
+export function urlForImage(source: any): string {
+  if (!source) return '';
+  if (typeof source === 'string') {
+    return source;
+  }
+  
+  const ref = source.asset?._ref || source._ref;
+  if (ref && typeof ref === 'string') {
+    const projectId = (typeof window !== 'undefined' ? localStorage.getItem('SANITY_PROJECT_ID') : '') || (import.meta as any).env?.VITE_SANITY_PROJECT_ID || '';
+    const dataset = (typeof window !== 'undefined' ? localStorage.getItem('SANITY_DATASET') : '') || (import.meta as any).env?.VITE_SANITY_DATASET || 'production';
+    if (!projectId) return '';
+    
+    // Deconstruct image-_ref: "image-8fca738d21c3df4cf0dbf57738e4df9bc4bc8cd5-1024x768-jpg"
+    const cleaned = ref.replace(/^image-/, '');
+    const lastDash = cleaned.lastIndexOf('-');
+    if (lastDash !== -1) {
+      const fileName = cleaned.substring(0, lastDash);
+      const extension = cleaned.substring(lastDash + 1);
+      return `https://cdn.sanity.io/images/${projectId}/${dataset}/${fileName}.${extension}`;
+    }
+  }
+  
+  if (source.asset?.url) {
+    return source.asset.url;
+  }
+  
+  return '';
+}
+
+/**
  * Perform direct GROQ queries on Sanity CMS via fetch API.
  * This satisfies the API integration requirement without bloated third party packages,
  * while utilizing a durable, highly styled native TS model.
