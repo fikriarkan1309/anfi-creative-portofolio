@@ -30,81 +30,87 @@ export default function Portfolio({ projects, personalInfo, lang }: PortfolioPro
 
   // Dynamic Case Study details generator based on category/title
   const getCaseStudyDetails = (project: ProjectItem) => {
-    // If the project itself has dynamic CMS populated properties, use them!
-    if (project.client || project.duration || project.deliverables || project.challenge || project.solution || project.quote) {
+    const isBranding = project.category.toLowerCase() === 'branding' || project.category.toLowerCase() === 'logo';
+    const isJersey = project.category.toLowerCase() === 'jersey' || project.category.toLowerCase() === 'apparel' || project.category.toLowerCase() === 'jersey & apparel';
+
+    // Retrieve default details depending on language & category
+    const defaultDetails = lang === 'id' 
+      ? (isBranding 
+          ? {
+              client: 'ANFI Creative Studio / Brand Pribadi',
+              duration: '2-3 Minggu',
+              deliverables: 'Logo Assets, Brand Guidelines PDF, Social Media Kit, Packaging Mockup',
+              challenge: 'Klien membutuhkan restrukturisasi identitas visual yang solid, berani, dan langsung dikenali. Tantangan utamanya adalah menciptakan desain modern yang menggabungkan estetika teknologi premium tanpa menghilangkan esensi keanggunan brand.',
+              solution: 'Kami merancang arsitektur visual berbasis kisi geometris minimalis, didukung font tampilan futuristik dan aksen warna cyan-emerald kontras tinggi. Setiap aset dikalibrasi sedemikian rupa agar tampak tajam di platform digital dan media cetak fisik.',
+              quote: 'Hasil branding ini mendongkrak persepsi nilai produk kami hingga lebih dari 50% di mata audiens baru!'
+            }
+          : isJersey
+            ? {
+                client: 'Garuda Sport Co / Phoenix Esports',
+                duration: '1-2 Minggu',
+                deliverables: 'Pola Sublimasi Kustom, Mockup 3D Premium, Seni Konsep Apparel Tim',
+                challenge: 'Mendesain jersey olahraga dan gaming yang tidak hanya memiliki pola pola grafis yang tajam dan dinamis, melainkan juga tata letak sublimasi presisi tinggi yang sesuai dengan anatomi fisik saat dicetak.',
+                solution: 'Kami merancang pola kustom bermasukan energi dinamis tinggi. Seluruh skema warna dicocokkan menggunakan format CMYK khusus untuk menjamin keakuratan warna cetak sublimasi 100% tanpa penurunan saturasi.',
+                quote: 'Jersey ini sangat nyaman dipakai dan langsung mencuri perhatian di turnamen nasional yang kami ikuti!'
+              }
+            : {
+                client: 'Kopinusa / Optima Tech Solutions',
+                duration: '3-4 Minggu',
+                deliverables: 'React Source Code, Desain UI/UX Figma, Optimasi SEO Kinerja Tinggi, Integrasi Sanity CMS',
+                challenge: 'Membangun platform digital modern dengan waktu pemuatan instan (sub-detik) yang menampilkan portofolio kelas premium secara interaktif, responsif penuh di seluler, dan mudah dikelola tanpa database rumit.',
+                solution: 'Kami membangun situs web menggunakan React 18+ ditenagai oleh Vite, dibantu Tailwind CSS untuk tata letak yang sangat fleksibel. Animasi mikro ditangani oleh framer-motion, dan semua data dinamis diintegrasikan dengan Sanity CMS.',
+                quote: 'Situs web berjalan sangat cepat, dan kami melihat peningkatan interaksi dari formulir kontak WhatsApp secara signifikan.'
+              }
+        )
+      : (isBranding
+          ? {
+              client: 'ANFI Creative Studio / Private Brand',
+              duration: '2-3 Weeks',
+              deliverables: 'Logo Assets, Brand Guidelines PDF, Social Media Kit, Packaging Mockup',
+              challenge: 'The client needed a solid, bold, and instantly recognizable brand identity overhaul. The key challenge was to merge modern design aesthetics with professional vibes without losing the elegance of the brand.',
+              solution: 'We designed a custom geometric visual architecture supported by futuristic headings and high-contrast cyan-emerald color accents. All assets were carefully optimized to look sharp on both screens and physical prints.',
+              quote: 'The resulting visual branding boosted our product value estimation by more than 50% in the eyes of our new audience!'
+            }
+          : isJersey
+            ? {
+                client: 'Garuda Sport Co / Phoenix Esports',
+                duration: '1-2 Weeks',
+                deliverables: 'Custom Sublimation Patterns, Premium 3D Mockups, Teamwear Concept Art',
+                challenge: 'Designing esports and sports jerseys that sport not only sharp, aerodynamic energy, but also high-precision sublimation layout configurations that conform naturally to human anatomy.',
+                solution: 'We drafted custom fiery speed patterns built of vibrant layouts. The overall color profiles were converted to specialized CMYK plates to guarantee 100% sublimation print depth with zero color decay.',
+                quote: 'The jerseys are incredibly comfortable and grabbed massive spectator attention in our national tournament matches!'
+              }
+            : {
+                client: 'Kopinusa / Optima Tech Solutions',
+                duration: '3-4 Weeks',
+                deliverables: 'React Source Code, Figma UI/UX Design, High Performance SEO Optimization, Sanity CMS Integration',
+                challenge: 'Developing a modern web hub with sub-second page performance loads showcasing premium creative deliverables, keeping design responsiveness flawless across active mobile viewports.',
+                solution: 'We bundled the app using React 18+ and Vite, utilizing lightweight Tailwind CSS classes. Staggered animations are powered by motion, with server content dynamic routes connected fully to Sanity CMS.',
+                quote: 'Our website feels super snappy, and we instantly got solid contact requests on our WhatsApp channel.'
+              }
+        );
+
+    // If the project itself has dynamic CMS populated properties, merge them with category defaults!
+    const rawProj = project as any;
+    const clientVal = project.client || rawProj.clientName;
+    const durationVal = project.duration || rawProj.projectDuration;
+    const deliverablesVal = project.deliverables || rawProj.projectDeliverables;
+    const challengeVal = project.challenge || rawProj.challenges || rawProj.tantangan;
+    const solutionVal = project.solution || rawProj.solutions || rawProj.solusi;
+    const quoteVal = project.quote || rawProj.feedback || rawProj.dampak || rawProj.impact || rawProj.testimonial || rawProj.testimoni || rawProj.clientQuote;
+
+    if (clientVal || durationVal || deliverablesVal || challengeVal || solutionVal || quoteVal) {
       return {
-        client: project.client || 'ANFI Creative Studio',
-        duration: project.duration || '2 Weeks',
-        deliverables: project.deliverables || 'Project Deliverables and Assets',
-        challenge: project.challenge || 'Custom creative design tailored to the brand identity objectives.',
-        solution: project.solution || 'Engineered bespoke visual components and layouts that represent style and performance.',
-        quote: project.quote || 'Outstanding execution, highly professional service, and flawless delivery!'
+        client: clientVal || defaultDetails.client,
+        duration: durationVal || defaultDetails.duration,
+        deliverables: deliverablesVal || defaultDetails.deliverables,
+        challenge: challengeVal || defaultDetails.challenge,
+        solution: solutionVal || defaultDetails.solution,
+        quote: quoteVal || defaultDetails.quote
       };
     }
 
-    const isBranding = project.category.toLowerCase() === 'branding';
-    const isJersey = project.category.toLowerCase() === 'jersey';
-
-    if (lang === 'id') {
-      if (isBranding) {
-        return {
-          client: 'ANFI Creative Studio / Brand Pribadi',
-          duration: '2-3 Minggu',
-          deliverables: 'Logo Assets, Brand Guidelines PDF, Social Media Kit, Packaging Mockup',
-          challenge: 'Klien membutuhkan restrukturisasi identitas visual yang solid, berani, dan langsung dikenali. Tantangan utamanya adalah menciptakan desain modern yang menggabungkan estetika teknologi premium tanpa menghilangkan esensi keanggunan brand.',
-          solution: 'Kami merancang arsitektur visual berbasis kisi geometris minimalis, didukung font tampilan futuristik dan aksen warna cyan-emerald kontras tinggi. Setiap aset dikalibrasi sedemikian rupa agar tampak tajam di platform digital dan media cetak fisik.',
-          quote: 'Hasil branding ini mendongkrak persepsi nilai produk kami hingga lebih dari 50% di mata audiens baru!'
-        };
-      } else if (isJersey) {
-        return {
-          client: 'Garuda Sport Co / Phoenix Esports',
-          duration: '1-2 Minggu',
-          deliverables: 'Pola Sublimasi Kustom, Mockup 3D Premium, Seni Konsep Apparel Tim',
-          challenge: 'Mendesain jersey olahraga dan gaming yang tidak hanya memiliki pola pola grafis yang tajam dan dinamis, melainkan juga tata letak sublimasi presisi tinggi yang sesuai dengan anatomi fisik saat dicetak.',
-          solution: 'Kami merancang pola kustom bermasukan energi dinamis tinggi. Seluruh skema warna dicocokkan menggunakan format CMYK khusus untuk menjamin keakuratan warna cetak sublimasi 100% tanpa penurunan saturasi.',
-          quote: 'Jersey ini sangat nyaman dipakai dan langsung mencuri perhatian di turnamen nasional yang kami ikuti!'
-        };
-      } else {
-        return {
-          client: 'Kopinusa / Optima Tech Solutions',
-          duration: '3-4 Minggu',
-          deliverables: 'React Source Code, Desain UI/UX Figma, Optimasi SEO Kinerja Tinggi, Integrasi Sanity CMS',
-          challenge: 'Membangun platform digital modern dengan waktu pemuatan instan (sub-detik) yang menampilkan portofolio kelas premium secara interaktif, responsif penuh di seluler, dan mudah dikelola tanpa database rumit.',
-          solution: 'Kami membangun situs web menggunakan React 18+ ditenagai oleh Vite, dibantu Tailwind CSS untuk tata letak yang sangat fleksibel. Animasi mikro ditangani oleh framer-motion, dan semua data dinamis diintegrasikan dengan Sanity CMS.',
-          quote: 'Situs web berjalan sangat cepat, dan kami melihat peningkatan interaksi dari formulir kontak WhatsApp secara signifikan.'
-        };
-      }
-    } else {
-      // English details
-      if (isBranding) {
-        return {
-          client: 'ANFI Creative Studio / Private Brand',
-          duration: '2-3 Weeks',
-          deliverables: 'Logo Assets, Brand Guidelines PDF, Social Media Kit, Packaging Mockup',
-          challenge: 'The client needed a solid, bold, and instantly recognizable brand identity overhaul. The key challenge was to merge modern design aesthetics with professional vibes without losing the elegance of the brand.',
-          solution: 'We designed a custom geometric visual architecture supported by futuristic headings and high-contrast cyan-emerald color accents. All assets were carefully optimized to look sharp on both screens and physical prints.',
-          quote: 'The resulting visual branding boosted our product value estimation by more than 50% in the eyes of our new audience!'
-        };
-      } else if (isJersey) {
-        return {
-          client: 'Garuda Sport Co / Phoenix Esports',
-          duration: '1-2 Weeks',
-          deliverables: 'Custom Sublimation Patterns, Premium 3D Mockups, Teamwear Concept Art',
-          challenge: 'Designing esports and sports jerseys that sport not only sharp, aerodynamic energy, but also high-precision sublimation layout configurations that conform naturally to human anatomy.',
-          solution: 'We drafted custom fiery speed patterns built of vibrant layouts. The overall color profiles were converted to specialized CMYK plates to guarantee 100% sublimation print depth with zero color decay.',
-          quote: 'The jerseys are incredibly comfortable and grabbed massive spectator attention in our national tournament matches!'
-        };
-      } else {
-        return {
-          client: 'Kopinusa / Optima Tech Solutions',
-          duration: '3-4 Weeks',
-          deliverables: 'React Source Code, Figma UI/UX Design, High Performance SEO Optimization, Sanity CMS Integration',
-          challenge: 'Developing a modern web hub with sub-second page performance loads showcasing premium creative deliverables, keeping design responsiveness flawless across active mobile viewports.',
-          solution: 'We bundled the app using React 18+ and Vite, utilizing lightweight Tailwind CSS classes. Staggered animations are powered by motion, with server content dynamic routes connected fully to Sanity CMS.',
-          quote: 'Our website feels super snappy, and we instantly got solid contact requests on our WhatsApp channel.'
-        };
-      }
-    }
+    return defaultDetails;
   };
 
   return (

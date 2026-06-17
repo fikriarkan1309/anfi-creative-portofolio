@@ -12,20 +12,20 @@ interface ServicesProps {
 export default function Services({ services, lang }: ServicesProps) {
   const t = TRANSLATIONS[lang];
 
-  // Configured colors for cards (Visual Identity: cyan, Apparel: orange, Web: blue)
+  // Configured colors for cards with highly pronounced glow characteristics (Visual Identity: cyan, Apparel: orange, Web: blue)
   const cardStyles = [
     {
-      glow: 'shadow-brand-cyan/5 hover:shadow-brand-cyan/15 hover:border-brand-cyan/40',
+      glow: 'shadow-[0_0_15px_rgba(0,229,255,0.06)] border-brand-cyan/25 hover:border-brand-cyan hover:shadow-[0_0_25px_rgba(0,229,255,0.35)]',
       tagColor: 'text-brand-cyan bg-brand-cyan/10',
       numColor: 'text-brand-cyan/20'
     },
     {
-      glow: 'shadow-brand-orange/5 hover:shadow-brand-orange/15 hover:border-brand-orange/40',
+      glow: 'shadow-[0_0_15px_rgba(255,107,0,0.06)] border-brand-orange/25 hover:border-brand-orange hover:shadow-[0_0_25px_rgba(255,107,0,0.35)]',
       tagColor: 'text-brand-orange bg-brand-orange/10',
       numColor: 'text-brand-orange/20'
     },
     {
-      glow: 'shadow-blue-500/5 hover:shadow-blue-500/15 hover:border-blue-500/40',
+      glow: 'shadow-[0_0_15px_rgba(59,130,246,0.06)] border-blue-500/25 hover:border-blue-400 hover:shadow-[0_0_25px_rgba(59,130,246,0.35)]',
       tagColor: 'text-blue-400 bg-blue-500/10',
       numColor: 'text-blue-500/20'
     }

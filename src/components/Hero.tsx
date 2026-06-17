@@ -164,7 +164,7 @@ export default function Hero({ personalInfo, services, skills, lang }: HeroProps
             {/* Column 1: Visual Identity */}
             <motion.div
               style={{ y: yCard1 }}
-              className="flex-1 bg-[#10161E]/80 border border-brand-cyan/25 rounded-xl p-3.5 flex flex-col justify-between shadow-xl backdrop-blur-md group hover:border-[#00E5FF]/55 transition-all duration-300 cursor-pointer"
+              className="flex-1 bg-[#10161E]/95 border border-brand-cyan/40 rounded-xl p-3.5 flex flex-col justify-between shadow-[0_0_15px_rgba(0,229,255,0.15)] backdrop-blur-md group hover:border-brand-cyan hover:shadow-[0_0_25px_rgba(0,229,255,0.45)] transition-all duration-300 cursor-pointer"
             >
               <div className="pb-2 border-b border-white/5">
                 <span className="text-[9px] text-[#00E5FF]/90 font-semibold tracking-wider font-mono block">
@@ -187,7 +187,7 @@ export default function Hero({ personalInfo, services, skills, lang }: HeroProps
             {/* Column 2: Apparel & Jersey (Staggered offset) */}
             <motion.div
               style={{ y: yCard2 }}
-              className="flex-1 bg-[#10161E]/80 border border-brand-orange/25 rounded-xl p-3.5 flex flex-col justify-between shadow-xl backdrop-blur-md group hover:border-brand-orange/55 transition-all duration-300 mt-6 -mb-6 cursor-pointer"
+              className="flex-1 bg-[#10161E]/95 border border-brand-orange/40 rounded-xl p-3.5 flex flex-col justify-between shadow-[0_0_15px_rgba(255,107,0,0.15)] backdrop-blur-md group hover:border-brand-orange hover:shadow-[0_0_25px_rgba(255,107,0,0.45)] transition-all duration-300 mt-6 -mb-6 cursor-pointer"
             >
               <div className="pb-2 border-b border-white/5">
                 <span className="text-[9px] text-brand-orange/90 font-semibold tracking-wider font-mono block">
@@ -210,7 +210,7 @@ export default function Hero({ personalInfo, services, skills, lang }: HeroProps
             {/* Column 3: Web Development */}
             <motion.div
               style={{ y: yCard3 }}
-              className="flex-1 bg-[#10161E]/80 border border-blue-500/25 rounded-xl p-3.5 flex flex-col justify-between shadow-xl backdrop-blur-md group hover:border-blue-400/55 transition-all duration-300 cursor-pointer"
+              className="flex-1 bg-[#10161E]/95 border border-blue-500/40 rounded-xl p-3.5 flex flex-col justify-between shadow-[0_0_15px_rgba(59,130,246,0.15)] backdrop-blur-md group hover:border-blue-400 hover:shadow-[0_0_25px_rgba(59,130,246,0.45)] transition-all duration-300 cursor-pointer"
             >
               <div className="pb-2 border-b border-white/5">
                 <span className="text-[9px] text-blue-400 font-semibold tracking-wider font-mono block">
