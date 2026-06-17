@@ -16,6 +16,7 @@ import {
   getSkills,
   getTestimonials,
   getProcesses,
+  urlForImage,
   FALLBACK_PERSONAL_INFO,
   FALLBACK_SERVICES,
   FALLBACK_PROJECTS,
@@ -63,8 +64,45 @@ export default function App() {
   };
 
   useEffect(() => {
+    // Check if configuration parameters are present in the URL for easy synchronization
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const urlSanityId = params.get('sanityId') || params.get('sanity_id');
+      const urlDataset = params.get('sanityDataset') || params.get('sanity_dataset') || 'production';
+      
+      if (urlSanityId) {
+        localStorage.setItem('SANITY_PROJECT_ID', urlSanityId);
+        localStorage.setItem('SANITY_DATASET', urlDataset);
+        // Clean up the URL query parameters so they don't linger
+        const newUrl = window.location.pathname + window.location.hash;
+        window.history.replaceState({}, document.title, newUrl);
+      }
+    }
     loadData();
   }, []);
+
+  // Update tab favicon based on loaded CMS Info Logo or fallback brand icon
+  useEffect(() => {
+    if (personalInfo) {
+      const logoUrl = personalInfo.logoImageUrl ? urlForImage(personalInfo.logoImageUrl) : '';
+      const faviconUrl = logoUrl || '/src/assets/images/brand_identity_1780983323908.png';
+      
+      let linkCount = 0;
+      const links = document.querySelectorAll("link[rel*='icon']");
+      links.forEach((link: any) => {
+        link.href = faviconUrl;
+        linkCount++;
+      });
+
+      if (linkCount === 0) {
+        const newLink = document.createElement('link');
+        newLink.rel = 'shortcut icon';
+        newLink.type = 'image/png';
+        newLink.href = faviconUrl;
+        document.head.appendChild(newLink);
+      }
+    }
+  }, [personalInfo]);
 
   const handleConfigSave = (projectId: string, dataset: string) => {
     console.log(`Saved Sanity Config: Project ID: ${projectId}, Dataset: ${dataset}`);
