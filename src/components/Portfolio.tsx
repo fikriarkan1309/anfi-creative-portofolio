@@ -30,8 +30,8 @@ export default function Portfolio({ projects, personalInfo, lang }: PortfolioPro
 
   // Dynamic Case Study details generator based on category/title
   const getCaseStudyDetails = (project: ProjectItem) => {
-    const isBranding = project.category.toLowerCase() === 'branding' || project.category.toLowerCase() === 'logo';
-    const isJersey = project.category.toLowerCase() === 'jersey' || project.category.toLowerCase() === 'apparel' || project.category.toLowerCase() === 'jersey & apparel';
+    const isBranding = project.category.toLowerCase() === 'branding' || project.category.toLowerCase() === 'logo' || project.category.toLowerCase().includes('brand');
+    const isJersey = project.category.toLowerCase() === 'jersey' || project.category.toLowerCase() === 'apparel' || project.category.toLowerCase() === 'jersey & apparel' || project.category.toLowerCase().includes('jersey');
 
     // Retrieve default details depending on language & category
     const defaultDetails = lang === 'id' 
@@ -90,15 +90,45 @@ export default function Portfolio({ projects, personalInfo, lang }: PortfolioPro
               }
         );
 
-    // If the project itself has dynamic CMS populated properties, merge them with category defaults!
-    const rawProj = project as any;
-    const clientVal = project.client || rawProj.clientName;
-    const durationVal = project.duration || rawProj.projectDuration;
-    const deliverablesVal = project.deliverables || rawProj.projectDeliverables;
-    const challengeVal = project.challenge || rawProj.challenges || rawProj.tantangan;
-    const solutionVal = project.solution || rawProj.solutions || rawProj.solusi;
-    const quoteVal = project.quote || rawProj.feedback || rawProj.dampak || rawProj.impact || rawProj.testimonial || rawProj.testimoni || rawProj.clientQuote;
+    // Helpers to clean and fallback
+    const getCleanString = (val: any): string => {
+      if (typeof val === 'string') {
+        const trimmed = val.trim();
+        if (trimmed.length > 0 && trimmed !== '""' && trimmed !== "''" && trimmed !== 'undefined' && trimmed !== 'null') {
+          return trimmed;
+        }
+      }
+      return '';
+    };
 
+    const rawProj = project as any;
+    const clientVal = getCleanString(project.client || rawProj.clientName);
+    const durationVal = getCleanString(project.duration || rawProj.projectDuration);
+    const deliverablesVal = getCleanString(project.deliverables || rawProj.projectDeliverables);
+    const challengeVal = getCleanString(project.challenge || rawProj.challenges || rawProj.tantangan);
+    const solutionVal = getCleanString(project.solution || rawProj.solutions || rawProj.solusi);
+    
+    const quoteVal = getCleanString(
+      project.quote || 
+      rawProj.feedback || 
+      rawProj.dampak || 
+      rawProj.impact || 
+      rawProj.testimonial || 
+      rawProj.testimonialQuote ||
+      rawProj.testimonial_quote ||
+      rawProj.testimoni || 
+      rawProj.testimoniQuote ||
+      rawProj.testimoni_quote ||
+      rawProj.clientQuote ||
+      rawProj.client_quote ||
+      rawProj.feedbackDampak ||
+      rawProj.feedback_dampak ||
+      rawProj.client_feedback ||
+      rawProj.review ||
+      rawProj.ulasan
+    );
+
+    // If any dynamic fields exist, return combined values falling back to defaults for any unpopulated field
     if (clientVal || durationVal || deliverablesVal || challengeVal || solutionVal || quoteVal) {
       return {
         client: clientVal || defaultDetails.client,
@@ -290,13 +320,13 @@ export default function Portfolio({ projects, personalInfo, lang }: PortfolioPro
                   </div>
                 </div>
 
-                {/* Body Content */}
+                 {/* Body Content */}
                 <div className="p-6 md:p-8 max-h-[55vh] overflow-y-auto custom-scrollbar flex flex-col gap-6 md:gap-8">
                   
                   {/* Meta Specs Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-b border-white/5 pb-5">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-brand-cyan/10 rounded-md border border-brand-cyan/20">
+                      <div className="p-2 bg-brand-cyan/10 rounded-md border border-brand-cyan/20 shrink-0">
                         <Calendar className="w-4 h-4 text-brand-cyan" />
                       </div>
                       <div>
@@ -304,13 +334,13 @@ export default function Portfolio({ projects, personalInfo, lang }: PortfolioPro
                         <span className="text-xs text-white/90 font-medium">{details.duration}</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-brand-orange/10 rounded-md border border-brand-orange/20">
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 bg-brand-orange/10 rounded-md border border-brand-orange/20 mt-0.5 shrink-0">
                         <Layers className="w-4 h-4 text-brand-orange" />
                       </div>
-                      <div>
+                      <div className="flex-1 min-w-0">
                         <span className="text-[10px] text-[#718096] uppercase font-mono block">DELIVERABLES</span>
-                        <span className="text-xs text-white/90 font-medium truncate max-w-[240px] block">{details.deliverables}</span>
+                        <span className="text-xs text-white/90 font-medium block break-words leading-snug mt-0.5">{details.deliverables}</span>
                       </div>
                     </div>
                   </div>
@@ -339,18 +369,43 @@ export default function Portfolio({ projects, personalInfo, lang }: PortfolioPro
                   </div>
 
                   {/* Highlights section / Testimonial box */}
-                  <div className="bg-[#111924]/80 border border-brand-cyan/20 rounded-xl p-4 flex items-start gap-3 relative overflow-hidden">
-                    <div className="absolute right-0 bottom-0 text-white/[0.03] text-5xl font-extrabold italic select-none">
-                      QUALITY
-                    </div>
-                    <ShieldCheck className="w-5 h-5 text-brand-cyan shrink-0 mt-0.5" />
-                    <div>
-                      <h5 className="text-[11px] font-mono text-brand-cyan uppercase tracking-wider font-semibold">{t.caseStudyFeedback}</h5>
-                      <p className="text-xs text-white/80 leading-relaxed italic mt-1 font-sans">
-                        "{details.quote}"
-                      </p>
-                    </div>
-                  </div>
+                  {(() => {
+                    const checkCategory = (selectedProject.category || '').toLowerCase();
+                    const isBranding = checkCategory === 'branding' || checkCategory === 'logo' || checkCategory.includes('brand');
+                    const isJersey = checkCategory === 'jersey' || checkCategory === 'apparel' || checkCategory === 'jersey & apparel' || checkCategory.includes('jersey');
+                    
+                    const finalQuote = details.quote && details.quote.trim().length > 0
+                      ? details.quote.trim()
+                      : (lang === 'id'
+                          ? (isBranding
+                              ? 'Hasil branding ini mendongkrak persepsi nilai produk kami hingga lebih dari 50% di mata audiens baru!'
+                              : isJersey
+                                ? 'Jersey ini sangat nyaman dipakai dan langsung mencuri perhatian di turnamen nasional yang kami ikuti!'
+                                : 'Situs web berjalan sangat cepat, dan kami melihat peningkatan interaksi dari formulir kontak WhatsApp secara signifikan.'
+                            )
+                          : (isBranding
+                              ? 'The resulting visual branding boosted our product value estimation by more than 50% in the eyes of our new audience!'
+                              : isJersey
+                                ? 'The jerseys are incredibly comfortable and grabbed massive spectator attention in our national tournament matches!'
+                                : 'Our website feels super snappy, and we instantly got solid contact requests on our WhatsApp channel.'
+                            )
+                        );
+
+                    return (
+                      <div className="bg-[#111924]/80 border border-brand-cyan/20 rounded-xl p-4 flex items-start gap-3 relative overflow-hidden">
+                        <div className="absolute right-0 bottom-0 text-white/[0.03] text-5xl font-extrabold italic select-none">
+                          QUALITY
+                        </div>
+                        <ShieldCheck className="w-5 h-5 text-brand-cyan shrink-0 mt-0.5" />
+                        <div>
+                          <h5 className="text-[11px] font-mono text-brand-cyan uppercase tracking-wider font-semibold">{t.caseStudyFeedback}</h5>
+                          <p className="text-xs text-white/80 leading-relaxed italic mt-1 font-sans">
+                            "{finalQuote}"
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })()}
 
                 </div>
 
