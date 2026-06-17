@@ -4,6 +4,48 @@ import { SkillItem, TestimonialItem, ProcessItem } from '../types';
 import { Language, TRANSLATIONS } from '../services/language';
 import { urlForImage } from '../services/sanity';
 
+const getToolStyles = (color?: string) => {
+  if (!color) {
+    return {
+      bg: 'rgba(0, 229, 255, 0.08)',
+      border: 'rgba(0, 229, 255, 0.25)',
+      text: '#00E5FF',
+      shadow: '0 0 10px rgba(0, 229, 255, 0.15)',
+      hoverShadow: '0 0 20px rgba(0, 229, 255, 0.45)',
+      glowVar: '#00E5FF'
+    };
+  }
+  let cleanColor = color.trim();
+  if (!cleanColor.startsWith('#') && !cleanColor.startsWith('rgb') && !cleanColor.startsWith('hsl') && cleanColor.length <= 6) {
+    cleanColor = '#' + cleanColor;
+  }
+
+  if (cleanColor.startsWith('#')) {
+    let hex = cleanColor;
+    if (hex.length === 4) {
+      hex = '#' + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
+    }
+    const baseHex = hex.slice(0, 7);
+    return {
+      bg: `${baseHex}15`,
+      border: `${baseHex}35`,
+      text: baseHex,
+      shadow: `0 0 10px ${baseHex}20`,
+      hoverShadow: `0 0 20px ${baseHex}55`,
+      glowVar: baseHex
+    };
+  }
+
+  return {
+    bg: cleanColor,
+    border: cleanColor,
+    text: cleanColor,
+    shadow: `0 0 10px ${cleanColor}`,
+    hoverShadow: `0 0 20px ${cleanColor}`,
+    glowVar: cleanColor
+  };
+};
+
 interface WorkflowAndSkillsProps {
   skills: SkillItem[];
   testimonials: TestimonialItem[];
@@ -110,32 +152,42 @@ export default function WorkflowAndSkills({
                 {t.skillsDesignStack}
               </span>
               <div className="grid grid-cols-5 gap-2">
-                {designSkills.map((skill, index) => (
-                  <motion.div
-                    key={skill.name}
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: index * 0.05 }}
-                    className="flex flex-col items-center gap-1 focus:outline-none"
-                  >
-                    <div
-                      className="w-10 h-10 bg-brand-card/70 border border-white/5 rounded-lg flex items-center justify-center text-xs font-mono font-extrabold cursor-pointer hover:border-brand-cyan/35 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden p-1.5"
-                      title={`${skill.name} - ${skill.level}%`}
+                {designSkills.map((skill, index) => {
+                  const styles = getToolStyles(skill.color);
+                  return (
+                    <motion.div
+                      key={skill.name}
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                      className="flex flex-col items-center gap-1 focus:outline-none"
                     >
-                      {skill.imageUrl ? (
-                        <img src={urlForImage(skill.imageUrl)} alt={skill.name} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
-                      ) : (
-                        <span className="font-mono text-xs font-extrabold" style={{ color: skill.color }}>
-                          {skill.abbr}
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-[9px] text-[#A0AEC0] font-mono tracking-tight text-center max-w-[50px] truncate">
-                      {skill.name}
-                    </span>
-                  </motion.div>
-                ))}
+                      <div
+                        className="w-10 h-10 border rounded-lg flex items-center justify-center text-xs font-mono font-extrabold cursor-pointer transition-all duration-300 overflow-hidden p-1.5 hover:-translate-y-0.5 hover:border-[var(--glow-color)] hover:shadow-[0_0_15px_var(--glow-color)]"
+                        style={{
+                          backgroundColor: styles.bg,
+                          borderColor: styles.border,
+                          boxShadow: styles.shadow,
+                          color: styles.text,
+                          ['--glow-color' as any]: styles.glowVar,
+                        }}
+                        title={`${skill.name} - ${skill.level}%`}
+                      >
+                        {skill.imageUrl ? (
+                          <img src={urlForImage(skill.imageUrl)} alt={skill.name} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
+                        ) : (
+                          <span className="font-mono text-xs font-extrabold">
+                            {skill.abbr}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-[9px] text-[#A0AEC0] font-mono tracking-tight text-center max-w-[50px] truncate">
+                        {skill.name}
+                      </span>
+                    </motion.div>
+                  );
+                })}
               </div>
             </div>
 
@@ -145,32 +197,42 @@ export default function WorkflowAndSkills({
                 {t.skillsDevStack}
               </span>
               <div className="grid grid-cols-5 gap-2">
-                {devSkills.map((skill, index) => (
-                  <motion.div
-                    key={skill.name}
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: index * 0.05 }}
-                    className="flex flex-col items-center gap-1"
-                  >
-                    <div
-                      className="w-10 h-10 bg-brand-card/70 border border-white/5 rounded-lg flex items-center justify-center text-xs font-mono font-extrabold cursor-pointer hover:border-brand-cyan/35 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden p-1.5"
-                      title={`${skill.name} - ${skill.level}%`}
+                {devSkills.map((skill, index) => {
+                  const styles = getToolStyles(skill.color);
+                  return (
+                    <motion.div
+                      key={skill.name}
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                      className="flex flex-col items-center gap-1"
                     >
-                      {skill.imageUrl ? (
-                        <img src={urlForImage(skill.imageUrl)} alt={skill.name} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
-                      ) : (
-                        <span className="font-mono text-xs font-extrabold" style={{ color: skill.color }}>
-                          {skill.abbr}
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-[9px] text-[#A0AEC0] font-mono tracking-tight text-center max-w-[50px] truncate">
-                      {skill.name}
-                    </span>
-                  </motion.div>
-                ))}
+                      <div
+                        className="w-10 h-10 border rounded-lg flex items-center justify-center text-xs font-mono font-extrabold cursor-pointer transition-all duration-300 overflow-hidden p-1.5 hover:-translate-y-0.5 hover:border-[var(--glow-color)] hover:shadow-[0_0_15px_var(--glow-color)]"
+                        style={{
+                          backgroundColor: styles.bg,
+                          borderColor: styles.border,
+                          boxShadow: styles.shadow,
+                          color: styles.text,
+                          ['--glow-color' as any]: styles.glowVar,
+                        }}
+                        title={`${skill.name} - ${skill.level}%`}
+                      >
+                        {skill.imageUrl ? (
+                          <img src={urlForImage(skill.imageUrl)} alt={skill.name} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
+                        ) : (
+                          <span className="font-mono text-xs font-extrabold">
+                            {skill.abbr}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-[9px] text-[#A0AEC0] font-mono tracking-tight text-center max-w-[50px] truncate">
+                        {skill.name}
+                      </span>
+                    </motion.div>
+                  );
+                })}
               </div>
             </div>
           </div>

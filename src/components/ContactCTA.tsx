@@ -45,7 +45,7 @@ export default function ContactCTA({ personalInfo, lang }: ContactCTAProps) {
   };
 
   return (
-    <footer id="contact" className="bg-[#060A0E] pt-12 pb-6 relative overflow-hidden border-t border-white/5Off">
+    <footer id="contact" className="bg-[#060A0E] pt-12 pb-6 relative overflow-hidden">
       {/* Background spotlights */}
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-brand-cyan/5 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-orange/5 rounded-full blur-[140px] pointer-events-none" />

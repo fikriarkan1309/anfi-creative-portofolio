@@ -4,6 +4,48 @@ import { PersonalInfo, ServiceItem, SkillItem } from '../types';
 import { Language, TRANSLATIONS } from '../services/language';
 import { urlForImage } from '../services/sanity';
 
+const getToolStyles = (color?: string) => {
+  if (!color) {
+    return {
+      bg: 'rgba(0, 229, 255, 0.08)',
+      border: 'rgba(0, 229, 255, 0.25)',
+      text: '#00E5FF',
+      shadow: '0 0 10px rgba(0, 229, 255, 0.15)',
+      hoverShadow: '0 0 20px rgba(0, 229, 255, 0.45)',
+      glowVar: '#00E5FF'
+    };
+  }
+  let cleanColor = color.trim();
+  if (!cleanColor.startsWith('#') && !cleanColor.startsWith('rgb') && !cleanColor.startsWith('hsl') && cleanColor.length <= 6) {
+    cleanColor = '#' + cleanColor;
+  }
+
+  if (cleanColor.startsWith('#')) {
+    let hex = cleanColor;
+    if (hex.length === 4) {
+      hex = '#' + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
+    }
+    const baseHex = hex.slice(0, 7);
+    return {
+      bg: `${baseHex}15`,
+      border: `${baseHex}35`,
+      text: baseHex,
+      shadow: `0 0 10px ${baseHex}20`,
+      hoverShadow: `0 0 20px ${baseHex}55`,
+      glowVar: baseHex
+    };
+  }
+
+  return {
+    bg: cleanColor,
+    border: cleanColor,
+    text: cleanColor,
+    shadow: `0 0 10px ${cleanColor}`,
+    hoverShadow: `0 0 20px ${cleanColor}`,
+    glowVar: cleanColor
+  };
+};
+
 interface HeroProps {
   personalInfo: PersonalInfo;
   services: ServiceItem[];
@@ -131,28 +173,33 @@ export default function Hero({ personalInfo, services, skills, lang }: HeroProps
               {t.toolsIUse}
             </span>
             <div className="flex flex-wrap gap-2.5">
-              {displayTools.map((tool) => (
-                <div
-                  key={tool.name}
-                  className="px-3 py-1.5 border text-xs font-mono font-bold tracking-tight rounded-xs transition-transform duration-300 hover:scale-105 flex items-center gap-1.5"
-                  style={{
-                    backgroundColor: `${tool.colorHex}10`,
-                    color: tool.colorHex,
-                    borderColor: `${tool.colorHex}35`
-                  }}
-                  title={tool.label}
-                >
-                  {tool.imageUrl ? (
-                    <img 
-                      src={tool.imageUrl} 
-                      alt={tool.label} 
-                      className="w-3.5 h-3.5 object-contain rounded-xs" 
-                      referrerPolicy="no-referrer"
-                    />
-                  ) : null}
-                  {tool.name}
-                </div>
-              ))}
+              {displayTools.map((tool) => {
+                const styles = getToolStyles(tool.colorHex);
+                return (
+                  <div
+                    key={tool.name}
+                    className="px-3 py-1.5 border text-xs font-mono font-bold tracking-tight rounded-xs transition-all duration-300 hover:scale-105 hover:border-[var(--glow-color)] hover:shadow-[0_0_15px_var(--glow-color)] flex items-center gap-1.5"
+                    style={{
+                      backgroundColor: styles.bg,
+                      color: styles.text,
+                      borderColor: styles.border,
+                      boxShadow: styles.shadow,
+                      ['--glow-color' as any]: styles.glowVar,
+                    }}
+                    title={tool.label}
+                  >
+                    {tool.imageUrl ? (
+                      <img 
+                        src={tool.imageUrl} 
+                        alt={tool.label} 
+                        className="w-3.5 h-3.5 object-contain rounded-xs" 
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : null}
+                    {tool.name}
+                  </div>
+                );
+              })}
             </div>
           </motion.div>
         </div>
