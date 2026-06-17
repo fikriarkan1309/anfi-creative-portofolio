@@ -13,6 +13,173 @@ interface PortfolioProps {
 
 type TabType = 'ALL' | 'BRANDING' | 'JERSEY' | 'WEBSITE';
 
+// Robust helper to extract plain string from any input type (including Sanity Portable Text block list)
+function cleanQuoteText(val: any): string {
+  if (!val) return '';
+  
+  let text = '';
+  if (typeof val === 'string') {
+    text = val;
+  } else if (Array.isArray(val)) {
+    try {
+      const parts: string[] = [];
+      for (const item of val) {
+        if (item && Array.isArray(item.children)) {
+          for (const c of item.children) {
+            if (c && typeof c.text === 'string') {
+              parts.push(c.text);
+            }
+          }
+        } else if (item && typeof item.text === 'string') {
+          parts.push(item.text);
+        } else if (typeof item === 'string') {
+          parts.push(item);
+        }
+      }
+      text = parts.join(' ');
+    } catch (e) {}
+  } else if (typeof val === 'object') {
+    if (Array.isArray(val.children)) {
+      try {
+        text = val.children
+          .filter((c: any) => c && typeof c.text === 'string')
+          .map((c: any) => c.text)
+          .join(' ');
+      } catch (e) {}
+    } else if (typeof val.text === 'string') {
+      text = val.text;
+    }
+  }
+
+  text = text.trim();
+  
+  // Clean invalid single-phrase placeholders
+  const lower = text.toLowerCase();
+  if (
+    !text ||
+    lower === 'null' ||
+    lower === 'undefined' ||
+    lower === '""' ||
+    lower === "''" ||
+    lower === '-' ||
+    lower === 'tbd' ||
+    lower === 'n/a' ||
+    lower === 'none' ||
+    lower === 'empty' ||
+    lower === 'belum ada' ||
+    lower === 'belum ada dampak' ||
+    lower === 'belum' ||
+    lower.length < 4
+  ) {
+    return '';
+  }
+  
+  return text;
+}
+
+function cleanGeneralString(val: any): string {
+  if (!val) return '';
+  let text = '';
+  if (typeof val === 'string') {
+    text = val;
+  } else if (Array.isArray(val)) {
+    try {
+      text = val.join(' ');
+    } catch(e) {}
+  }
+  text = text.trim();
+  const lower = text.toLowerCase();
+  if (
+    !text ||
+    lower === 'null' ||
+    lower === 'undefined' ||
+    lower === '""' ||
+    lower === "''" ||
+    lower === '-' ||
+    lower === 'tbd' ||
+    lower === 'n/a'
+  ) {
+    return '';
+  }
+  return text;
+}
+
+// Generate the high-quality category specific fallback quote 
+function getFallbackQuote(project: ProjectItem, lang: Language): string {
+  const cat = (project.category || '').toLowerCase();
+  const title = (project.title || '').toLowerCase();
+  const tag = (project.tag || '').toLowerCase();
+
+  const isBranding = 
+    cat === 'branding' || 
+    cat === 'logo' || 
+    cat.includes('brand') || 
+    cat.includes('f&b') || 
+    cat.includes('makanan') ||
+    cat.includes('minuman') ||
+    title.includes('brand') || 
+    title.includes('logo') || 
+    title.includes('hazenna') ||
+    tag.includes('brand') || 
+    tag.includes('logo');
+
+  const isJersey = 
+    cat === 'jersey' || 
+    cat === 'apparel' || 
+    cat === 'jersey & apparel' || 
+    cat.includes('jersey') || 
+    title.includes('jersey') || 
+    title.includes('apparel') || 
+    title.includes('phoenix') || 
+    title.includes('tiger') ||
+    tag.includes('jersey') || 
+    tag.includes('apparel');
+
+  const isTablet = 
+    cat === 'tablet' || 
+    cat.includes('tablet') || 
+    cat.includes('ipad') || 
+    title.includes('tablet') || 
+    title.includes('ipad') || 
+    tag.includes('tablet') || 
+    tag.includes('ipad');
+
+  const isMobile = 
+    cat === 'mobile' || 
+    cat === 'app' || 
+    cat.includes('mobile') || 
+    cat.includes('phone') || 
+    title.includes('mobile') || 
+    title.includes('app') || 
+    tag.includes('mobile') || 
+    tag.includes('app');
+
+  const isWeb = 
+    cat === 'web' || 
+    cat === 'website' || 
+    cat.includes('web') || 
+    title.includes('web') || 
+    title.includes('site') || 
+    tag.includes('web') || 
+    tag.includes('site');
+
+  if (lang === 'id') {
+    if (isBranding) return 'Hasil branding ini mendongkrak persepsi nilai produk kami hingga lebih dari 50% di mata audiens baru!';
+    if (isJersey) return 'Jersey ini sangat nyaman dipakai dan langsung mencuri perhatian di turnamen nasional yang kami ikuti!';
+    if (isTablet) return 'Desain antarmuka untuk versi tablet sangat bersih dan transisinya terasa sangat smooth serta interaktif!';
+    if (isMobile) return 'Aplikasi mobile sangat responsif, navigasinya intuitif, dan pengguna kami sangat menyukai tampilan visualnya!';
+    if (isWeb) return 'Situs web berjalan sangat cepat, dan kami melihat peningkatan interaksi dari formulir kontak WhatsApp secara signifikan.';
+    return 'Hasil pekerjaan sangat detail, komunikasi profesional, dan eksekusi visual di semua ukuran device sangat luar biasa.';
+  } else {
+    if (isBranding) return 'The resulting visual branding boosted our product value estimation by more than 50% in the eyes of our new audience!';
+    if (isJersey) return 'The jerseys are incredibly comfortable and grabbed massive spectator attention in our national tournament matches!';
+    if (isTablet) return 'The tablet interface layout is extremely neat, and the transitions feel amazingly smooth and interactive!';
+    if (isMobile) return 'The mobile app is highly responsive, has intuitive navigation, and our users absolutely love the interface!';
+    if (isWeb) return 'Our website feels super snappy, and we instantly got solid contact requests on our WhatsApp channel.';
+    return 'The deliverables are highly detailed, communication was professional, and the visual execution is outstanding.';
+  }
+}
+
 export default function Portfolio({ projects, personalInfo, lang }: PortfolioProps) {
   const [activeTab, setActiveTab] = useState<TabType>('ALL');
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
@@ -30,8 +197,60 @@ export default function Portfolio({ projects, personalInfo, lang }: PortfolioPro
 
   // Dynamic Case Study details generator based on category/title
   const getCaseStudyDetails = (project: ProjectItem) => {
-    const isBranding = project.category.toLowerCase() === 'branding' || project.category.toLowerCase() === 'logo' || project.category.toLowerCase().includes('brand');
-    const isJersey = project.category.toLowerCase() === 'jersey' || project.category.toLowerCase() === 'apparel' || project.category.toLowerCase() === 'jersey & apparel' || project.category.toLowerCase().includes('jersey');
+    const checkCategory = (project.category || '').toLowerCase();
+    const checkTitle = (project.title || '').toLowerCase();
+    const checkTag = (project.tag || '').toLowerCase();
+
+    const isBranding = 
+      checkCategory === 'branding' || 
+      checkCategory === 'logo' || 
+      checkCategory.includes('brand') || 
+      checkCategory.includes('f&b') || 
+      checkTitle.includes('brand') || 
+      checkTitle.includes('logo') || 
+      checkTitle.includes('hazenna') ||
+      checkTag.includes('brand') || 
+      checkTag.includes('logo');
+
+    const isJersey = 
+      checkCategory === 'jersey' || 
+      checkCategory === 'apparel' || 
+      checkCategory === 'jersey & apparel' || 
+      checkCategory.includes('jersey') || 
+      checkTitle.includes('jersey') || 
+      checkTitle.includes('apparel') || 
+      checkTitle.includes('phoenix') || 
+      checkTitle.includes('tiger') ||
+      checkTag.includes('jersey') || 
+      checkTag.includes('apparel');
+
+    const isTablet = 
+      checkCategory === 'tablet' || 
+      checkCategory.includes('tablet') || 
+      checkCategory.includes('ipad') || 
+      checkTitle.includes('tablet') || 
+      checkTitle.includes('ipad') || 
+      checkTag.includes('tablet') || 
+      checkTag.includes('ipad');
+
+    const isMobile = 
+      checkCategory === 'mobile' || 
+      checkCategory === 'app' || 
+      checkCategory.includes('mobile') || 
+      checkCategory.includes('phone') || 
+      checkTitle.includes('mobile') || 
+      checkTitle.includes('app') || 
+      checkTag.includes('mobile') || 
+      checkTag.includes('app');
+
+    const isWeb = 
+      checkCategory === 'web' || 
+      checkCategory === 'website' || 
+      checkCategory.includes('web') || 
+      checkTitle.includes('web') || 
+      checkTitle.includes('site') || 
+      checkTag.includes('web') || 
+      checkTag.includes('site');
 
     // Retrieve default details depending on language & category
     const defaultDetails = lang === 'id' 
@@ -53,14 +272,32 @@ export default function Portfolio({ projects, personalInfo, lang }: PortfolioPro
                 solution: 'Kami merancang pola kustom bermasukan energi dinamis tinggi. Seluruh skema warna dicocokkan menggunakan format CMYK khusus untuk menjamin keakuratan warna cetak sublimasi 100% tanpa penurunan saturasi.',
                 quote: 'Jersey ini sangat nyaman dipakai dan langsung mencuri perhatian di turnamen nasional yang kami ikuti!'
               }
-            : {
-                client: 'Kopinusa / Optima Tech Solutions',
-                duration: '3-4 Minggu',
-                deliverables: 'React Source Code, Desain UI/UX Figma, Optimasi SEO Kinerja Tinggi, Integrasi Sanity CMS',
-                challenge: 'Membangun platform digital modern dengan waktu pemuatan instan (sub-detik) yang menampilkan portofolio kelas premium secara interaktif, responsif penuh di seluler, dan mudah dikelola tanpa database rumit.',
-                solution: 'Kami membangun situs web menggunakan React 18+ ditenagai oleh Vite, dibantu Tailwind CSS untuk tata letak yang sangat fleksibel. Animasi mikro ditangani oleh framer-motion, dan semua data dinamis diintegrasikan dengan Sanity CMS.',
-                quote: 'Situs web berjalan sangat cepat, dan kami melihat peningkatan interaksi dari formulir kontak WhatsApp secara signifikan.'
-              }
+            : isTablet
+              ? {
+                  client: 'TabFit Studio / Media Tab',
+                  duration: '2-3 Minggu',
+                  deliverables: 'Tablet UI Designs, Responsive Prototype, Figma Assets Ready',
+                  challenge: 'Membangun tata letak adaptif khusus tablet dengan optimasi rasio aspek 4:3 dan 16:10 agar navigasi tetap nyaman dipegang dua tangan.',
+                  solution: 'Kami merancang area grid interaktif modular dengan target ketukan minimum 48px, transisi gestur swipe halus, dan sidebar navigasi collapsible.',
+                  quote: 'Desain antarmuka untuk versi tablet sangat bersih dan transisinya terasa sangat smooth serta interaktif!'
+                }
+              : isMobile
+                ? {
+                    client: 'GoApp Tech / Solusi Seluler',
+                    duration: '2-3 Minggu',
+                    deliverables: 'Mobile App Wireframes, High-Fidelity UI/UX Designs, Interactive Prototype',
+                    challenge: 'Menciptakan antarmuka aplikasi mobile yang ramah ibu jari (thumb-friendly), dengan beban muat grafis yang minimal agar lancar di HP spek menengah.',
+                    solution: 'Kami merancang sistem desain komponen seluler modern di Figma, membatasi palet warna dominan gelap dengan aksen cyan berpendar, serta merancang navigasi bottom-bar yang ergonomis.',
+                    quote: 'Aplikasi mobile sangat responsif, navigasinya intuitif, dan pengguna kami sangat menyukai tampilan visualnya!'
+                  }
+                : {
+                    client: 'Kopinusa / Optima Tech Solutions',
+                    duration: '3-4 Minggu',
+                    deliverables: 'React Source Code, Desain UI/UX Figma, Optimasi SEO Kinerja Tinggi, Integrasi Sanity CMS',
+                    challenge: 'Membangun platform digital modern dengan waktu pemuatan instan (sub-detik) yang menampilkan portofolio kelas premium secara interaktif, responsif penuh di seluler, dan mudah dikelola tanpa database rumit.',
+                    solution: 'Kami membangun situs web menggunakan React 18+ ditenagai oleh Vite, dibantu Tailwind CSS untuk tata letak yang sangat fleksibel. Animasi mikro ditangani oleh framer-motion, dan semua data dinamis diintegrasikan dengan Sanity CMS.',
+                    quote: 'Situs web berjalan sangat cepat, dan kami melihat peningkatan interaksi dari formulir kontak WhatsApp secara signifikan.'
+                  }
         )
       : (isBranding
           ? {
@@ -80,35 +317,42 @@ export default function Portfolio({ projects, personalInfo, lang }: PortfolioPro
                 solution: 'We drafted custom fiery speed patterns built of vibrant layouts. The overall color profiles were converted to specialized CMYK plates to guarantee 100% sublimation print depth with zero color decay.',
                 quote: 'The jerseys are incredibly comfortable and grabbed massive spectator attention in our national tournament matches!'
               }
-            : {
-                client: 'Kopinusa / Optima Tech Solutions',
-                duration: '3-4 Weeks',
-                deliverables: 'React Source Code, Figma UI/UX Design, High Performance SEO Optimization, Sanity CMS Integration',
-                challenge: 'Developing a modern web hub with sub-second page performance loads showcasing premium creative deliverables, keeping design responsiveness flawless across active mobile viewports.',
-                solution: 'We bundled the app using React 18+ and Vite, utilizing lightweight Tailwind CSS classes. Staggered animations are powered by motion, with server content dynamic routes connected fully to Sanity CMS.',
-                quote: 'Our website feels super snappy, and we instantly got solid contact requests on our WhatsApp channel.'
-              }
+            : isTablet
+              ? {
+                  client: 'TabFit Studio / Media Tab',
+                  duration: '2-3 Weeks',
+                  deliverables: 'Tablet UI Designs, Responsive Prototype, Figma Assets Ready',
+                  challenge: 'Building adaptive layouts for tablet screens, optimizing 4:3 and 16:10 aspect ratios so that hand-held scrolling and navigation are completely ergonomic.',
+                  solution: 'We generated a finger-optimized multi-grid layout with targets above 48px, utilizing rich interactive swipes and collapsible side navigation bars.',
+                  quote: 'The tablet interface layout is extremely neat, and the transitions feel amazingly smooth and interactive!'
+                }
+              : isMobile
+                ? {
+                    client: 'GoApp Tech / Mobile Solutions',
+                    duration: '2-3 Weeks',
+                    deliverables: 'Mobile App Wireframes, High-Fidelity UI/UX Designs, Interactive Prototype',
+                    challenge: 'Creating mobile screens that are entirely thumb-friendly, visually spectacular under low-speed mobile connections, and battery efficient.',
+                    solution: 'We authored custom React Native components styled with high contrast theme assets, introducing bottom ergonomics and gorgeous screen transitions.',
+                    quote: 'The mobile app is highly responsive, has intuitive navigation, and our users absolutely love the interface!'
+                  }
+                : {
+                    client: 'Kopinusa / Optima Tech Solutions',
+                    duration: '3-4 Weeks',
+                    deliverables: 'React Source Code, Figma UI/UX Design, High Performance SEO Optimization, Sanity CMS Integration',
+                    challenge: 'Developing a modern web hub with sub-second page performance loads showcasing premium creative deliverables, keeping design responsiveness flawless across active mobile viewports.',
+                    solution: 'We bundled the app using React 18+ and Vite, utilizing lightweight Tailwind CSS classes. Staggered animations are powered by motion, with server content dynamic routes connected fully to Sanity CMS.',
+                    quote: 'Our website feels super snappy, and we instantly got solid contact requests on our WhatsApp channel.'
+                  }
         );
 
-    // Helpers to clean and fallback
-    const getCleanString = (val: any): string => {
-      if (typeof val === 'string') {
-        const trimmed = val.trim();
-        if (trimmed.length > 0 && trimmed !== '""' && trimmed !== "''" && trimmed !== 'undefined' && trimmed !== 'null') {
-          return trimmed;
-        }
-      }
-      return '';
-    };
-
     const rawProj = project as any;
-    const clientVal = getCleanString(project.client || rawProj.clientName);
-    const durationVal = getCleanString(project.duration || rawProj.projectDuration);
-    const deliverablesVal = getCleanString(project.deliverables || rawProj.projectDeliverables);
-    const challengeVal = getCleanString(project.challenge || rawProj.challenges || rawProj.tantangan);
-    const solutionVal = getCleanString(project.solution || rawProj.solutions || rawProj.solusi);
+    const clientVal = cleanGeneralString(project.client || rawProj.clientName);
+    const durationVal = cleanGeneralString(project.duration || rawProj.projectDuration);
+    const deliverablesVal = cleanGeneralString(project.deliverables || rawProj.projectDeliverables);
+    const challengeVal = cleanQuoteText(project.challenge || rawProj.challenges || rawProj.tantangan);
+    const solutionVal = cleanQuoteText(project.solution || rawProj.solutions || rawProj.solusi);
     
-    const quoteVal = getCleanString(
+    const quoteVal = cleanQuoteText(
       project.quote || 
       rawProj.feedback || 
       rawProj.dampak || 
@@ -321,7 +565,7 @@ export default function Portfolio({ projects, personalInfo, lang }: PortfolioPro
                 </div>
 
                  {/* Body Content */}
-                <div className="p-6 md:p-8 max-h-[55vh] overflow-y-auto custom-scrollbar flex flex-col gap-6 md:gap-8">
+                <div className="p-6 md:p-8 max-h-[65vh] md:max-h-[65vh] lg:max-h-[70vh] overflow-y-auto custom-scrollbar flex flex-col gap-6 md:gap-8">
                   
                   {/* Meta Specs Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-b border-white/5 pb-5">
@@ -370,36 +614,36 @@ export default function Portfolio({ projects, personalInfo, lang }: PortfolioPro
 
                   {/* Highlights section / Testimonial box */}
                   {(() => {
-                    const checkCategory = (selectedProject.category || '').toLowerCase();
-                    const isBranding = checkCategory === 'branding' || checkCategory === 'logo' || checkCategory.includes('brand');
-                    const isJersey = checkCategory === 'jersey' || checkCategory === 'apparel' || checkCategory === 'jersey & apparel' || checkCategory.includes('jersey');
+                    const rawProj = selectedProject as any;
+                    const directQuote = (selectedProject as any).quote || rawProj.feedback || rawProj.dampak || rawProj.testimonial;
+                    const cleanedDirect = cleanQuoteText(directQuote);
                     
-                    const finalQuote = details.quote && details.quote.trim().length > 0
-                      ? details.quote.trim()
-                      : (lang === 'id'
-                          ? (isBranding
-                              ? 'Hasil branding ini mendongkrak persepsi nilai produk kami hingga lebih dari 50% di mata audiens baru!'
-                              : isJersey
-                                ? 'Jersey ini sangat nyaman dipakai dan langsung mencuri perhatian di turnamen nasional yang kami ikuti!'
-                                : 'Situs web berjalan sangat cepat, dan kami melihat peningkatan interaksi dari formulir kontak WhatsApp secara signifikan.'
-                            )
-                          : (isBranding
-                              ? 'The resulting visual branding boosted our product value estimation by more than 50% in the eyes of our new audience!'
-                              : isJersey
-                                ? 'The jerseys are incredibly comfortable and grabbed massive spectator attention in our national tournament matches!'
-                                : 'Our website feels super snappy, and we instantly got solid contact requests on our WhatsApp channel.'
-                            )
-                        );
+                    let finalQuote = '';
+                    if (cleanedDirect) {
+                      finalQuote = cleanedDirect;
+                    } else {
+                      const cleanedDetails = cleanQuoteText(details.quote);
+                      if (cleanedDetails) {
+                        finalQuote = cleanedDetails;
+                      } else {
+                        finalQuote = getFallbackQuote(selectedProject, lang);
+                      }
+                    }
+
+                    // Strict emergency backup to ensure we NEVER output empty text
+                    if (!finalQuote || finalQuote.trim().length < 5) {
+                      finalQuote = getFallbackQuote(selectedProject, lang);
+                    }
 
                     return (
                       <div className="bg-[#111924]/80 border border-brand-cyan/20 rounded-xl p-4 flex items-start gap-3 relative overflow-hidden">
                         <div className="absolute right-0 bottom-0 text-white/[0.03] text-5xl font-extrabold italic select-none">
                           QUALITY
                         </div>
-                        <ShieldCheck className="w-5 h-5 text-brand-cyan shrink-0 mt-0.5" />
-                        <div>
+                        <ShieldCheck className="w-5 h-5 text-[#00E5FF] shrink-0 mt-0.5" />
+                        <div className="flex-1 min-w-0">
                           <h5 className="text-[11px] font-mono text-brand-cyan uppercase tracking-wider font-semibold">{t.caseStudyFeedback}</h5>
-                          <p className="text-xs text-white/80 leading-relaxed italic mt-1 font-sans">
+                          <p className="text-xs text-white/80 leading-relaxed italic mt-1 font-sans block break-words">
                             "{finalQuote}"
                           </p>
                         </div>
