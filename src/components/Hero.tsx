@@ -2,7 +2,7 @@ import { motion, useScroll, useTransform } from 'motion/react';
 import { Mail, ArrowUpRight } from 'lucide-react';
 import { PersonalInfo, ServiceItem, SkillItem } from '../types';
 import { Language, TRANSLATIONS } from '../services/language';
-import { urlForImage } from '../services/sanity';
+import { urlForImage, brandIdentity, jerseyDesign, laptopWebDev } from '../services/sanity';
 
 const getToolStyles = (color?: string) => {
   if (!color) {
@@ -98,9 +98,9 @@ export default function Hero({ personalInfo, services, skills, lang }: HeroProps
   const service2Title = personalInfo.heroApparelTitle || (lang === 'id' ? 'DESAIN UNTUK IDENTITAS TIM' : 'DESIGN THAT REPRESENTS pride');
   const service3Title = personalInfo.heroWebTitle || (lang === 'id' ? 'WEBSITE DENGAN LOAD CEPAT' : 'WEBSITES THAT DRIVE GROWTH');
 
-  const service1Image = personalInfo.heroBrandingImage ? urlForImage(personalInfo.heroBrandingImage) : "/src/assets/images/brand_identity_1780983323908.png";
-  const service2Image = personalInfo.heroApparelImage ? urlForImage(personalInfo.heroApparelImage) : "/src/assets/images/jersey_design_1780983307716.png";
-  const service3Image = personalInfo.heroWebImage ? urlForImage(personalInfo.heroWebImage) : "/src/assets/images/laptop_web_dev_1780983341066.png";
+  const service1Image = personalInfo.heroBrandingImage ? urlForImage(personalInfo.heroBrandingImage) : brandIdentity;
+  const service2Image = personalInfo.heroApparelImage ? urlForImage(personalInfo.heroApparelImage) : jerseyDesign;
+  const service3Image = personalInfo.heroWebImage ? urlForImage(personalInfo.heroWebImage) : laptopWebDev;
 
   return (
     <section id="home" className="relative lg:min-h-[85vh] pt-20 pb-10 flex items-center overflow-hidden bg-radial-gradient">
