@@ -22,7 +22,8 @@ import {
   FALLBACK_PROJECTS,
   FALLBACK_SKILLS,
   FALLBACK_TESTIMONIALS,
-  FALLBACK_PROCESSES
+  FALLBACK_PROCESSES,
+  brandIdentity
 } from './services/sanity';
 
 import { PersonalInfo, ServiceItem, ProjectItem, SkillItem, TestimonialItem, ProcessItem } from './types';
@@ -85,7 +86,7 @@ export default function App() {
   useEffect(() => {
     if (personalInfo) {
       const logoUrl = personalInfo.logoImageUrl ? urlForImage(personalInfo.logoImageUrl) : '';
-      const faviconUrl = logoUrl || '/src/assets/images/brand_identity_1780983323908.png';
+      const faviconUrl = logoUrl || brandIdentity;
       
       let linkCount = 0;
       const links = document.querySelectorAll("link[rel*='icon']");
