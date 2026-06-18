@@ -187,6 +187,46 @@ export const FALLBACK_TESTIMONIALS: TestimonialItem[] = [
 const SANITY_API_VERSION = 'v2022-03-07';
 
 /**
+ * Cleanly retrieves the current Sanity Project ID and Dataset with extensive safeguards.
+ * Handles missing values, empty strings, null values, or "undefined"/"null" string inputs.
+ */
+export function getSanityConfig(): { projectId: string; dataset: string } {
+  let projectId = '';
+  let dataset = '';
+  
+  if (typeof window !== 'undefined') {
+    const cachedId = localStorage.getItem('SANITY_PROJECT_ID');
+    const cachedDataset = localStorage.getItem('SANITY_DATASET');
+    
+    if (cachedId && cachedId !== 'null' && cachedId !== 'undefined' && cachedId.trim() !== '') {
+      projectId = cachedId.trim();
+    }
+    if (cachedDataset && cachedDataset !== 'null' && cachedDataset !== 'undefined' && cachedDataset.trim() !== '') {
+      dataset = cachedDataset.trim();
+    }
+  }
+  
+  if (!projectId) {
+    // @ts-ignore
+    projectId = import.meta.env?.VITE_SANITY_PROJECT_ID || 'sft5jjse';
+  }
+  if (!dataset) {
+    // @ts-ignore
+    dataset = import.meta.env?.VITE_SANITY_DATASET || 'production';
+  }
+  
+  // Final safe fallback if the values are still invalid or contain literal "null"/"undefined"
+  if (!projectId || projectId === 'null' || projectId === 'undefined' || projectId.trim() === '') {
+    projectId = 'sft5jjse';
+  }
+  if (!dataset || dataset === 'null' || dataset === 'undefined' || dataset.trim() === '') {
+    dataset = 'production';
+  }
+  
+  return { projectId, dataset };
+}
+
+/**
  * Robust utility to resolve Sanity images into standard image URLs.
  * Supports both raw URL strings and Sanity native image objects with an asset reference (_ref).
  */
@@ -198,11 +238,7 @@ export function urlForImage(source: any): string {
   
   const ref = source.asset?._ref || source._ref;
   if (ref && typeof ref === 'string') {
-    // @ts-ignore
-    const projectId = (typeof window !== 'undefined' ? localStorage.getItem('SANITY_PROJECT_ID') : '') || import.meta.env.VITE_SANITY_PROJECT_ID || 'sft5jjse';
-    // @ts-ignore
-    const dataset = (typeof window !== 'undefined' ? localStorage.getItem('SANITY_DATASET') : '') || import.meta.env.VITE_SANITY_DATASET || 'production';
-    if (!projectId) return '';
+    const { projectId, dataset } = getSanityConfig();
     
     // Deconstruct image-_ref: "image-8fca738d21c3df4cf0dbf57738e4df9bc4bc8cd5-1024x768-jpg"
     const cleaned = ref.replace(/^image-/, '');
@@ -227,51 +263,46 @@ export function urlForImage(source: any): string {
  * while utilizing a durable, highly styled native TS model.
  */
 async function fetchFromSanity<T>(query: string): Promise<T | null> {
-  // @ts-ignore
-  const projectId = (typeof window !== 'undefined' ? localStorage.getItem('SANITY_PROJECT_ID') : '') || import.meta.env.VITE_SANITY_PROJECT_ID || 'sft5jjse';
-  // @ts-ignore
-  const dataset = (typeof window !== 'undefined' ? localStorage.getItem('SANITY_DATASET') : '') || import.meta.env.VITE_SANITY_DATASET || 'production';
+  const { projectId, dataset } = getSanityConfig();
 
   if (!projectId) {
     return null;
   }
   
   const encodedQuery = encodeURIComponent(query);
+  // Prioritize Sanity's optimized public CDN URL (Blazing-fast and cached at the edge)
+  const directUrl = `https://${projectId}.apicdn.sanity.io/${SANITY_API_VERSION}/data/query/${dataset}?query=${encodedQuery}`;
   const proxyUrl = `/api/sanity?projectId=${projectId}&dataset=${dataset}&query=${encodedQuery}`;
   
+  // 1. First choice: Direct Sanity CDN call (Fast, CORS-approved, Edge-cached)
   try {
-    // 1. Attempt to query through the robust backend API proxy first (CORS-immune)
-    const res = await fetch(proxyUrl);
-    if (res.ok) {
-      const json = await res.json();
+    const directRes = await fetch(directUrl);
+    if (directRes.ok) {
+      const json = await directRes.json();
       return json.result as T;
     }
-    
-    // Status was not OK, fall back to direct Sanity direct query
-    console.warn(`Sanity API proxy status: ${res.status}, falling back to direct browser query...`);
-    const directUrl = `https://${projectId}.api.sanity.io/${SANITY_API_VERSION}/data/query/${dataset}?query=${encodedQuery}`;
-    const directRes = await fetch(directUrl);
-    if (!directRes.ok) {
-      console.warn(`Sanity Direct API fallback error: ${directRes.statusText}`);
-      return null;
-    }
-    const json = await directRes.json();
-    return json.result as T;
-  } catch (err: any) {
-    // 2. If the proxy fails (e.g. static site environments), attempt direct browser call
-    try {
-      const directUrl = `https://${projectId}.api.sanity.io/${SANITY_API_VERSION}/data/query/${dataset}?query=${encodedQuery}`;
-      const directRes = await fetch(directUrl);
-      if (directRes.ok) {
-        const json = await directRes.json();
+    console.warn(`Sanity API CDN status is ${directRes.status}, attempting fallback...`);
+  } catch (directErr: any) {
+    console.warn('Direct Sanity CDN fetch attempted but failed (likely offline/network issue); trying proxy...', directErr?.message || directErr);
+  }
+
+  // 2. Second choice: Try through backend API proxy (handles edge cases, CORS issues)
+  try {
+    const res = await fetch(proxyUrl);
+    if (res.ok) {
+      const contentType = res.headers.get('content-type') || '';
+      // Only parse as JSON if it is actually JSON to avoid index.html rewrite issues
+      if (contentType.includes('application/json')) {
+        const json = await res.json();
         return json.result as T;
       }
-    } catch (directErr: any) {
-      // Gentle warning note rather than fatal console.error to keep testing workflows happy
-      console.warn('Sanity database connection offline, serving beautiful default portfolio content.', directErr?.message || directErr);
     }
-    return null;
+    console.warn(`Sanity backend proxy returned invalid response status or content type. Serving beautiful default content.`);
+  } catch (err: any) {
+    console.warn('Sanity database connection offline, serving beautiful default portfolio content.', err?.message || err);
   }
+  
+  return null;
 }
 
 export async function getPersonalInfo(): Promise<PersonalInfo> {
