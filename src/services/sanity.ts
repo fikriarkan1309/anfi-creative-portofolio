@@ -1,5 +1,13 @@
 import { PersonalInfo, ServiceItem, ProjectItem, SkillItem, TestimonialItem, ProcessItem } from '../types';
 
+import brandIdentity from '../assets/images/brand_identity_1780983323908.png';
+import fikriPortrait from '../assets/images/fikri_portrait_1780983289777.png';
+import jerseyDesign from '../assets/images/jersey_design_1780983307716.png';
+import laptopWebDev from '../assets/images/laptop_web_dev_1780983341066.png';
+import phoenixJersey from '../assets/images/phoenix_jersey_1780983359718.png';
+
+export { brandIdentity, fikriPortrait, jerseyDesign, laptopWebDev, phoenixJersey };
+
 // Fallback high-quality data from the exact portfolio in the image reference.
 // The image paths are the ones generated dynamically for pixel-perfect presentation.
 export const FALLBACK_PERSONAL_INFO: PersonalInfo = {
@@ -10,7 +18,7 @@ export const FALLBACK_PERSONAL_INFO: PersonalInfo = {
   projectsCount: 100,
   clientsCount: 50,
   aboutText: 'Saya adalah Graphic Designer dan Web Developer yang berfokus pada Visual Identity, Apparel Design, dan pembuatan Website modern. Saya senang membantu brand dan bisnis untuk tampil lebih profesional, kuat, dan berkesan.',
-  aboutPhotoUrl: '/src/assets/images/fikri_portrait_1780983289777.png',
+  aboutPhotoUrl: fikriPortrait,
   cvUrl: 'https://drive.google.com/file/d/YOUR_CV_FILE_ID/view?usp=sharing', // EDIT SINI UNTUK LINK DOWNLOAD CV
   portfolioPdfUrl: 'https://drive.google.com/file/d/YOUR_PORTFOLIO_FILE_ID/view?usp=sharing', // EDIT SINI UNTUK LINK GOOGLE DRIVE PORTFOLIO PDF
   whatsapp: '+6282121309886', // Silakan edit sesuai nomor WA asli Fikri
@@ -38,7 +46,7 @@ export const FALLBACK_SERVICES: ServiceItem[] = [
       'Social Media Assets',
       'Packaging Design'
     ],
-    imageUrl: '/src/assets/images/brand_identity_1780983323908.png'
+    imageUrl: brandIdentity
   },
   {
     id: 'service-2',
@@ -52,7 +60,7 @@ export const FALLBACK_SERVICES: ServiceItem[] = [
       'Sublimation Design',
       'Sports Apparel'
     ],
-    imageUrl: '/src/assets/images/jersey_design_1780983307716.png'
+    imageUrl: jerseyDesign
   },
   {
     id: 'service-3',
@@ -66,7 +74,7 @@ export const FALLBACK_SERVICES: ServiceItem[] = [
       'E-commerce',
       'Custom Website'
     ],
-    imageUrl: '/src/assets/images/laptop_web_dev_1780983341066.png'
+    imageUrl: laptopWebDev
   }
 ];
 
@@ -75,42 +83,42 @@ export const FALLBACK_PROJECTS: ProjectItem[] = [
     id: 'proj-1',
     title: 'ANFI STUDIO BRANDING',
     category: 'Branding',
-    imageUrl: '/src/assets/images/brand_identity_1780983323908.png',
+    imageUrl: brandIdentity,
     tag: 'Visual Identity Design'
   },
   {
     id: 'proj-2',
     title: 'PHOENIX FC JERSEY',
     category: 'Jersey',
-    imageUrl: '/src/assets/images/phoenix_jersey_1780983359718.png',
+    imageUrl: phoenixJersey,
     tag: 'Apparel Design'
   },
   {
     id: 'proj-3',
     title: 'KOPINUSA WEBSITE',
     category: 'Website',
-    imageUrl: '/src/assets/images/laptop_web_dev_1780983341066.png',
+    imageUrl: laptopWebDev,
     tag: 'Web Development'
   },
   {
     id: 'proj-4',
     title: 'AZZAHRA BRANDING',
     category: 'Branding',
-    imageUrl: '/src/assets/images/brand_identity_1780983323908.png',
+    imageUrl: brandIdentity,
     tag: 'Visual Identity Design'
   },
   {
     id: 'proj-5',
     title: 'TIGER ESPORT JERSEY',
     category: 'Jersey',
-    imageUrl: '/src/assets/images/jersey_design_1780983307716.png',
+    imageUrl: jerseyDesign,
     tag: 'Apparel Design'
   },
   {
     id: 'proj-6',
     title: 'OPTIMA WEBSITE',
     category: 'Website',
-    imageUrl: '/src/assets/images/laptop_web_dev_1780983341066.png',
+    imageUrl: laptopWebDev,
     tag: 'Web Development'
   }
 ];
