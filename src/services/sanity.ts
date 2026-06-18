@@ -198,8 +198,10 @@ export function urlForImage(source: any): string {
   
   const ref = source.asset?._ref || source._ref;
   if (ref && typeof ref === 'string') {
-    const projectId = (typeof window !== 'undefined' ? localStorage.getItem('SANITY_PROJECT_ID') : '') || (import.meta as any).env?.VITE_SANITY_PROJECT_ID || 'sft5jjse';
-    const dataset = (typeof window !== 'undefined' ? localStorage.getItem('SANITY_DATASET') : '') || (import.meta as any).env?.VITE_SANITY_DATASET || 'production';
+    // @ts-ignore
+    const projectId = (typeof window !== 'undefined' ? localStorage.getItem('SANITY_PROJECT_ID') : '') || import.meta.env.VITE_SANITY_PROJECT_ID || 'sft5jjse';
+    // @ts-ignore
+    const dataset = (typeof window !== 'undefined' ? localStorage.getItem('SANITY_DATASET') : '') || import.meta.env.VITE_SANITY_DATASET || 'production';
     if (!projectId) return '';
     
     // Deconstruct image-_ref: "image-8fca738d21c3df4cf0dbf57738e4df9bc4bc8cd5-1024x768-jpg"
@@ -225,8 +227,10 @@ export function urlForImage(source: any): string {
  * while utilizing a durable, highly styled native TS model.
  */
 async function fetchFromSanity<T>(query: string): Promise<T | null> {
-  const projectId = (typeof window !== 'undefined' ? localStorage.getItem('SANITY_PROJECT_ID') : '') || (import.meta as any).env?.VITE_SANITY_PROJECT_ID || 'sft5jjse';
-  const dataset = (typeof window !== 'undefined' ? localStorage.getItem('SANITY_DATASET') : '') || (import.meta as any).env?.VITE_SANITY_DATASET || 'production';
+  // @ts-ignore
+  const projectId = (typeof window !== 'undefined' ? localStorage.getItem('SANITY_PROJECT_ID') : '') || import.meta.env.VITE_SANITY_PROJECT_ID || 'sft5jjse';
+  // @ts-ignore
+  const dataset = (typeof window !== 'undefined' ? localStorage.getItem('SANITY_DATASET') : '') || import.meta.env.VITE_SANITY_DATASET || 'production';
 
   if (!projectId) {
     return null;
