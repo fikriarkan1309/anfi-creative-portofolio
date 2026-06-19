@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { PersonalInfo } from '../types';
 import { Language, TRANSLATIONS } from '../services/language';
+import { urlForImage } from '../services/sanity';
 
 interface ContactCTAProps {
   personalInfo: PersonalInfo;
@@ -21,6 +22,7 @@ export default function ContactCTA({ personalInfo, lang }: ContactCTAProps) {
   const t = TRANSLATIONS[lang];
   const logoText = personalInfo.logoText || 'ANFI CREATIVE';
   const logoSubtext = personalInfo.logoSubtext || 'DESIGN • APPAREL • WEB';
+  const logoImg = personalInfo.logoImageUrl ? urlForImage(personalInfo.logoImageUrl) : '';
 
   const benefits = [
     {
@@ -105,11 +107,20 @@ export default function ContactCTA({ personalInfo, lang }: ContactCTAProps) {
           {/* Col 1: About Anfi (Spans 6 columns) */}
           <div className="lg:col-span-6 flex flex-col gap-4">
             <a href="#home" className="flex items-center gap-3 group">
-              <div className="relative w-8 h-8 flex items-center justify-center border-2 border-brand-cyan rotate-45 overflow-hidden transition-transform duration-500">
-                <span className="text-brand-cyan font-bold -rotate-45 text-sm uppercase">
-                  {logoText.charAt(0)}
-                </span>
-              </div>
+              {logoImg ? (
+                <img 
+                  src={logoImg} 
+                  alt={logoText} 
+                  className="w-10 h-10 object-contain transition-transform duration-500 group-hover:scale-105 rounded-xs"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <div className="relative w-8 h-8 flex items-center justify-center border-2 border-brand-cyan rotate-45 overflow-hidden transition-transform duration-500">
+                  <span className="text-brand-cyan font-bold -rotate-45 text-sm uppercase">
+                    {logoText.charAt(0)}
+                  </span>
+                </div>
+              )}
               <div>
                 <span className="font-display font-bold tracking-widest text-white text-base block uppercase">
                   {logoText}
