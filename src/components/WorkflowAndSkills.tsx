@@ -67,7 +67,7 @@ export default function WorkflowAndSkills({
 
   // Multi-lang step translators
   const getProcessCopy = (proc: ProcessItem, index: number) => {
-    if (lang === 'en') {
+    if (proc.isFallback && lang === 'en') {
       if (index === 0) return { title: t.process1Title, desc: t.process1Desc };
       if (index === 1) return { title: t.process2Title, desc: t.process2Desc };
       if (index === 2) return { title: t.process3Title, desc: t.process3Desc };
@@ -279,9 +279,9 @@ export default function WorkflowAndSkills({
                   <div className="flex items-center justify-between border-t border-white/5 pt-2.5 mt-auto gap-2">
                     <div className="flex items-center gap-2.5">
                       {/* Dynamic Image or Initials Avatar Placeholder */}
-                      {test.avatarUrl ? (
+                      {test.avatarUrl && urlForImage(test.avatarUrl) ? (
                         <img
-                          src={test.avatarUrl}
+                          src={urlForImage(test.avatarUrl)}
                           alt={test.author}
                           className="w-8 h-8 rounded-full object-cover border border-white/10 shrink-0"
                           referrerPolicy="no-referrer"
